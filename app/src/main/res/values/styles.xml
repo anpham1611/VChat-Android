@@ -1,0 +1,60 @@
+<resources>
+
+    <style name="LaunchActivity" parent="Theme.AppCompat.Light">
+        <item name="android:windowBackground">@drawable/bg_main_activity</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="PrimaryActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorPrimaryDark">@color/red_dark</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:windowBackground">@drawable/bg_main_activity</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:windowAnimationStyle">@style/MainActivityAnimation</item>
+    </style>
+
+    <style name="SecondaryActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@drawable/bg_main_activity</item>
+        <item name="android:windowAnimationStyle">@style/SubActivityAnimation</item>
+    </style>
+
+    <style name="DialogActivity" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="NoViewActivity" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
+    <style name="LoadingDialogTheme" parent="@android:style/Theme.Light">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/black_tr8</item>
+    </style>
+
+    <style name="MainActivityAnimation">
+        <item name="android:activityOpenEnterAnimation">@anim/main_activity_open_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/main_activity_open_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/main_activity_close_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/main_activity_close_exit</item>
+    </style>
+
+    <style name="SubActivityAnimation">
+        <item name="android:activityOpenEnterAnimation">@anim/sub_activity_open</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@anim/sub_activity_close</item>
+    </style>
+
+    <style name="PrimaryActivity.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="PrimaryActivity.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>
