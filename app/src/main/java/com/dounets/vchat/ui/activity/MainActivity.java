@@ -1,14 +1,17 @@
 package com.dounets.vchat.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 
 import com.dounets.vchat.R;
 import com.dounets.vchat.ui.uicontroller.MainActivityUiController;
+import com.dounets.vchat.video.FFmpegRecorderActivity;
 
 public class MainActivity extends PrimaryActivity {
 
@@ -33,4 +36,9 @@ public class MainActivity extends PrimaryActivity {
         });
     }
 
+    public void onClickRecord() {
+        //nhay qua man hinh record
+        Intent i = new Intent(MainActivity.this, FFmpegRecorderActivity.class);
+        startActivity(i);
+    }
 }

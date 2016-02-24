@@ -32,6 +32,12 @@
         tools:context="com.dounets.vchat.ui.activity.MainActivity"
         tools:showIn="@layout/activity_main">
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Record Video"
+            android:id="@+id/button"
+            android:layout_centerInParent="true"/>
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton

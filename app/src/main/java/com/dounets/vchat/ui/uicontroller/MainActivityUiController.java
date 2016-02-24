@@ -2,6 +2,7 @@ package com.dounets.vchat.ui.uicontroller;
 
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 
 import com.dounets.vchat.R;
 import com.dounets.vchat.ui.activity.MainActivity;
@@ -18,6 +19,9 @@ public class MainActivityUiController implements View.OnClickListener {
     @Bind(R.id.toolbar)
     Toolbar toolBar;
 
+    @Bind(R.id.button)
+    Button recordButton;
+
     public MainActivityUiController(MainActivity activity) {
         this.activity = activity;
         ButterKnife.bind(this, activity);
@@ -26,6 +30,7 @@ public class MainActivityUiController implements View.OnClickListener {
 
     private void init() {
         initToolbar();
+        recordButton.setOnClickListener(this);
     }
 
     private void initToolbar() {
@@ -36,6 +41,10 @@ public class MainActivityUiController implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.button: {
+                activity.onClickRecord();
+            }
+            break;
             default:
                 activity.onBackPressed();
                 break;

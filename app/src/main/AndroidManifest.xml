@@ -73,6 +73,18 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/PrimaryActivity"></activity>
+
+        <activity
+            android:name=".video.FFmpegRecorderActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".video.FFmpegPreviewActivity"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
 </manifest>
