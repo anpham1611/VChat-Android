@@ -36,7 +36,8 @@
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:singleLine="true"
+            android:textColor="@color/grey"
             android:hint="Input your name"/>
         <Button
             android:id="@+id/btn_next"
