@@ -40,14 +40,6 @@
         android:name="com.nykline.dealer.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <!-- Custom Meta Data -->
-    <meta-data
-        android:name="API_SCHEME"
-        android:value="http" />
-    <meta-data
-        android:name="API_DOMAIN"
-        android:value="" />
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -55,6 +47,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/PrimaryActivity">
+
+        <!-- Custom Meta Data -->
+        <meta-data
+            android:name="API_SCHEME"
+            android:value="https" />
+        <meta-data
+            android:name="API_DOMAIN"
+            android:value="morning-meadow-28417.herokuapp.com" />
+
         <activity
             android:name=".ui.activity.SignInActivity"
             android:label="@string/app_name"
@@ -72,16 +73,18 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/PrimaryActivity"></activity>
-
+            android:theme="@style/PrimaryActivity">
+        </activity>
         <activity
             android:name=".video.FFmpegRecorderActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:name=".video.FFmpegPreviewActivity"
             android:label="@string/app_name" >
         </activity>

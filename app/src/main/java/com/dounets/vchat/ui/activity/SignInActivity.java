@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
+import com.dounets.vchat.App;
 import com.dounets.vchat.R;
 import com.dounets.vchat.net.api.ApiError;
 import com.dounets.vchat.net.api.ApiResponse;
@@ -35,14 +37,14 @@ public class SignInActivity extends PrimaryActivity {
             uiController.getTvName().setError(getString(R.string.error_invalid_name));
 
         } else {
-            asyncRequestRegister(name);
+            asyncRequestRegister(name, "");
         }
     }
 
-    private void asyncRequestRegister(final String phoneNumber) {
+    private void asyncRequestRegister(String phoneNumber, String deviceId) {
         showLoadingMessage(R.string.processing);
 
-//        ApiHelper.doRegister(phoneNumber).continueWith(new Continuation<ApiResponse, Object>() {
+//        ApiHelper.doRegister(phoneNumber, deviceId).continueWith(new Continuation<ApiResponse, Object>() {
 //            @Override
 //            public Object then(final Task<ApiResponse> task) throws Exception {
 //                dismissLoadingMessage();
@@ -50,7 +52,7 @@ public class SignInActivity extends PrimaryActivity {
 //                    @Override
 //                    public void run() {
 //                        if (task.isFaulted()) {
-//                            toastApiErrorMessage((ApiError) task.getError());
+//                            Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_SHORT).show();
 //                            return;
 //                        }
 //                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
