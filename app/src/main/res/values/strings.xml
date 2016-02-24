@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">VChat</string>
     <string name="processing">Processing</string>
+    <string name="error_invalid_name">Please input your name.</string>
 </resources>

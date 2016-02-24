@@ -32,7 +32,7 @@ public class SignInActivityUiController  implements View.OnClickListener {
         btnNext.setOnClickListener(this);
     }
 
-    private String getName() {
+    public String getName() {
         return tvName.getText().toString();
     }
 
@@ -43,5 +43,29 @@ public class SignInActivityUiController  implements View.OnClickListener {
                 activity.onClickNext(getName());
                 break;
         }
+    }
+
+    public Button getBtnNext() {
+        return btnNext;
+    }
+
+    public void setBtnNext(Button btnNext) {
+        this.btnNext = btnNext;
+    }
+
+    public SignInActivity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(SignInActivity activity) {
+        this.activity = activity;
+    }
+
+    public EditText getTvName() {
+        return tvName;
+    }
+
+    public void setTvName(EditText tvName) {
+        this.tvName = tvName;
     }
 }

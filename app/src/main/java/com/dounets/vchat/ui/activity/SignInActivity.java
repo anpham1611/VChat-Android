@@ -30,7 +30,13 @@ public class SignInActivity extends PrimaryActivity {
     }
 
     public void onClickNext(String name) {
-        asyncRequestRegister(name);
+        uiController.getTvName().setError(null);
+        if (uiController.getName().equals("")) {
+            uiController.getTvName().setError(getString(R.string.error_invalid_name));
+
+        } else {
+            asyncRequestRegister(name);
+        }
     }
 
     private void asyncRequestRegister(final String phoneNumber) {
