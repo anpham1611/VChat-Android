@@ -10,9 +10,10 @@ import bolts.Task;
 
 public class ApiHelper extends BaseHelper {
 
-    public static final Task<ApiResponse> doRegister(final String name) {
+    public static final Task<ApiResponse> doRegister(String name, String deviceId) {
         HashMap<String, String> params = new HashMap<>();
         params.put("name", name);
+        params.put("device_id", deviceId);
         ApiRequest request = new ApiRequest(ApiRequest.Method.POST, getPrefixUrl() + "register", params);
         return ApiClient.callInBackground(request);
     }

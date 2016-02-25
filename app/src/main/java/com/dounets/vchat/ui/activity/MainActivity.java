@@ -108,7 +108,6 @@ public class MainActivity extends PrimaryActivity {
 
 
     public void onClickRecord() {
-        //nhay qua man hinh record
         Intent i = new Intent(MainActivity.this, FFmpegRecorderActivity.class);
         startActivity(i);
     }
