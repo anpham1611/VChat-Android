@@ -18,4 +18,11 @@ public class ApiHelper extends BaseHelper {
         return ApiClient.callInBackground(request);
     }
 
+    public static final Task<ApiResponse> doGetListUsers(String exceptId) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", exceptId);
+        ApiRequest request = new ApiRequest(ApiRequest.Method.POST, getPrefixUrl() + "user_list", params);
+        return ApiClient.callInBackground(request);
+    }
+
 }

@@ -20,7 +20,12 @@ public class ApiResponse {
 
     ApiResponse(Response response) {
         headers = response.headers().toMultimap();
-        body = getUngzippedBody(response);
+//        body = getUngzippedBody(response);
+        try {
+            body = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getBody() {
@@ -41,6 +46,7 @@ public class ApiResponse {
                 return new String(baos.toByteArray());
             }
         } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             try {
                 if (is != null) {

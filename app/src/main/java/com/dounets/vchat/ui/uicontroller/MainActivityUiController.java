@@ -8,12 +8,14 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.dounets.vchat.R;
+import com.dounets.vchat.data.model.Contact;
 import com.dounets.vchat.ui.activity.MainActivity;
 import com.dounets.vchat.ui.adapter.ContactAdapter;
 import com.dounets.vchat.ui.adapter.SampleData;
 import com.etsy.android.grid.StaggeredGridView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,7 +26,7 @@ import butterknife.ButterKnife;
 public class MainActivityUiController implements View.OnClickListener, AbsListView.OnScrollListener, AbsListView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     MainActivity activity;
     ContactAdapter adapter;
-    ArrayList<String> data;
+    List<Contact> data;
     boolean mHasRequestedMore;
     private String TAG = MainActivityUiController.class.getSimpleName();
 
@@ -43,15 +45,6 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
 
     private void init() {
         initToolbar();
-
-        if (data == null) {
-            data = SampleData.generateSampleData();
-        }
-
-        for (String _data : data) {
-            adapter.add(_data);
-        }
-
         gridView.setAdapter(adapter);
         gridView.setOnScrollListener(this);
         gridView.setOnItemClickListener(this);
@@ -61,6 +54,10 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
     private void initToolbar() {
         toolBar.setNavigationIcon(R.drawable.icn_white_back);
         toolBar.setNavigationOnClickListener(this);
+    }
+
+    public void notifyDataSetChanged() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -14,11 +14,15 @@ import android.widget.Toast;
 import com.dounets.vchat.R;
 import com.dounets.vchat.app.Config;
 import com.dounets.vchat.gcm.GcmIntentService;
+import com.dounets.vchat.helper.SharedPreferenceUtils;
 import com.dounets.vchat.net.api.ApiResponse;
 import com.dounets.vchat.net.helper.ApiHelper;
 import com.dounets.vchat.ui.uicontroller.SignInActivityUiController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -125,10 +129,13 @@ public class SignInActivity extends PrimaryActivity {
         }
     }
 
-    private void asyncRequestRegister(String phoneNumber, String deviceId) {
+    private void asyncRequestRegister(String name, String deviceId) {
+
+        SharedPreferenceUtils.saveString("user_name", name);
+
         showLoadingMessage(R.string.processing);
 
-        ApiHelper.doRegister(phoneNumber, deviceId).continueWith(new Continuation<ApiResponse, Object>() {
+        ApiHelper.doRegister(name, deviceId).continueWith(new Continuation<ApiResponse, Object>() {
             @Override
             public Object then(final Task<ApiResponse> task) throws Exception {
                 dismissLoadingMessage();
@@ -139,6 +146,15 @@ public class SignInActivity extends PrimaryActivity {
                             Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_SHORT).show();
                             return;
                         }
+
+                        try {
+                            JSONObject obj = new JSONObject(task.getResult().getBody());
+                            String id = obj.getString("id");
+                            SharedPreferenceUtils.saveString("user_id", id);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                         Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                         startActivity(intent);
                     }

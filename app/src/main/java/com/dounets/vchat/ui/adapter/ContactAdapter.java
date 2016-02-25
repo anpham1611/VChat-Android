@@ -12,9 +12,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.dounets.vchat.R;
+import com.dounets.vchat.data.model.Contact;
+import com.dounets.vchat.ui.activity.BaseActivity;
 import com.etsy.android.grid.util.DynamicHeightTextView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import butterknife.Bind;
@@ -24,7 +27,7 @@ import butterknife.ButterKnife;
  * ADAPTER
  */
 
-public class ContactAdapter extends ArrayAdapter<String> {
+public class ContactAdapter extends ArrayAdapter<Contact> {
 
     private static final String TAG = "SampleAdapter";
 
@@ -44,8 +47,8 @@ public class ContactAdapter extends ArrayAdapter<String> {
 
     private static final SparseArray<Double> sPositionHeightRatios = new SparseArray<Double>();
 
-    public ContactAdapter(final Context context, final int textViewResourceId) {
-        super(context, textViewResourceId);
+    public ContactAdapter(Context context, List<Contact> arrContacts) {
+        super(context, 0, arrContacts);
         mLayoutInflater = LayoutInflater.from(context);
         mRandom = new Random();
         mBackgroundColors = new ArrayList<Integer>();
@@ -78,7 +81,7 @@ public class ContactAdapter extends ArrayAdapter<String> {
         Log.d(TAG, "getView position:" + position + " h:" + positionHeight);
 
         vh.txtLineOne.setHeightRatio(positionHeight);
-        vh.txtLineOne.setText(getItem(position) + position);
+        vh.txtLineOne.setText(getItem(position).getName());
 
         return convertView;
     }
@@ -90,7 +93,7 @@ public class ContactAdapter extends ArrayAdapter<String> {
         // some match based on the known height and width of the image
         // and maybe a helpful way to get the column height!
         if (ratio == 0) {
-            ratio = getRandomHeightRatio();
+            ratio = 1.0;//getRandomHeightRatio();
             sPositionHeightRatios.append(position, ratio);
             Log.d(TAG, "getPositionRatio:" + position + " ratio:" + ratio);
         }

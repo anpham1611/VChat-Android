@@ -32,17 +32,25 @@
         tools:context=".ui.activity.SignInActivity"
         android:orientation="vertical">
 
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_chat"/>
+
         <EditText
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/grey"
+            android:layout_marginTop="12dp"
             android:hint="Input your name"/>
         <Button
             android:id="@+id/btn_next"
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="NEXT"/>
 
     </LinearLayout>

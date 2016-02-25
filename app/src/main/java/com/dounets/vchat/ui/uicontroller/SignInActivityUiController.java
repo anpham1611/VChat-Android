@@ -5,6 +5,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.dounets.vchat.R;
+import com.dounets.vchat.helper.SharedPreferenceUtils;
 import com.dounets.vchat.ui.activity.SignInActivity;
 
 import butterknife.Bind;
@@ -30,6 +31,11 @@ public class SignInActivityUiController  implements View.OnClickListener {
 
     private void init() {
         btnNext.setOnClickListener(this);
+        if (SharedPreferenceUtils.getString("user_name") != null) {
+            if (!SharedPreferenceUtils.getString("user_name").equals("")) {
+                tvName.setText(SharedPreferenceUtils.getString("user_name"));
+            }
+        }
     }
 
     public String getName() {

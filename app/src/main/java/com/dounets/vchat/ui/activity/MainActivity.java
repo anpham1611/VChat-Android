@@ -12,12 +12,26 @@ import android.widget.Toast;
 
 import com.dounets.vchat.R;
 import com.dounets.vchat.app.Config;
+import com.dounets.vchat.data.model.Contact;
 import com.dounets.vchat.gcm.GcmIntentService;
+import com.dounets.vchat.helper.SharedPreferenceUtils;
+import com.dounets.vchat.net.api.ApiResponse;
+import com.dounets.vchat.net.helper.ApiHelper;
 import com.dounets.vchat.ui.adapter.ContactAdapter;
 import com.dounets.vchat.ui.uicontroller.MainActivityUiController;
 import com.dounets.vchat.video.FFmpegRecorderActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import bolts.Continuation;
+import bolts.Task;
 
 public class MainActivity extends PrimaryActivity {
 
@@ -25,6 +39,7 @@ public class MainActivity extends PrimaryActivity {
     private String TAG = MainActivity.class.getSimpleName();
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private List<Contact> mData;
     private ContactAdapter mAdapter;
 
     @Override
@@ -34,10 +49,12 @@ public class MainActivity extends PrimaryActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mAdapter = new ContactAdapter(this, R.id.txt_line1);
+        mData = new ArrayList<>();
+        mAdapter = new ContactAdapter(this, mData);
         uiController = new MainActivityUiController(this, mAdapter);
 
         init();
+        asyncRequestGetListUsers();
     }
 
     private void init() {
@@ -71,6 +88,47 @@ public class MainActivity extends PrimaryActivity {
             registerGCM();
         }
 
+    }
+
+    private void asyncRequestGetListUsers() {
+
+        showLoadingMessage(R.string.processing);
+
+        ApiHelper.doGetListUsers(SharedPreferenceUtils.getString("user_id")).continueWith(new Continuation<ApiResponse, Object>() {
+            @Override
+            public Object then(final Task<ApiResponse> task) throws Exception {
+                dismissLoadingMessage();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (task.isFaulted()) {
+                            Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        try {
+                            JSONArray objArr = new JSONArray(task.getResult().getBody());
+
+                            mData.clear();
+                            for (int i = 0; i < objArr.length(); i++) {
+                                JSONObject obj = objArr.getJSONObject(i);
+                                Contact contact = new Contact();
+                                contact.setId(obj.getLong("id"));
+                                contact.setName(obj.getString("name"));
+                                contact.setMobile_id(obj.getString("token"));
+                                mData.add(contact);
+                            }
+                            uiController.notifyDataSetChanged();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+                return null;
+            }
+        });
     }
 
     public void onClickRecord() {
