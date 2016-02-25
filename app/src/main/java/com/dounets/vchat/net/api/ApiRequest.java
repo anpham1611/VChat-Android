@@ -2,7 +2,7 @@
 package com.dounets.vchat.net.api;
 
 import com.dounets.vchat.data.Meta;
-import com.dounets.vchat.data.model.User;
+import com.dounets.vchat.data.model.Contact;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.Request;
@@ -101,8 +101,8 @@ public class ApiRequest {
         if (timeZone != null) {
             builder.add("Time-Zone", timeZone);
         }
-        if (User.currentUser() != null && User.currentUser().getApi_token() != null) {
-            builder.add("Api-Token", User.currentUser().getApi_token());
+        if (Contact.currentUser() != null && Contact.currentUser().getApi_token() != null) {
+            builder.add("Api-Token", Contact.currentUser().getApi_token());
         }
         return builder.build();
     }

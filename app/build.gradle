@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 23
@@ -10,6 +11,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -49,4 +51,5 @@ dependencies {
     compile 'com.github.rahatarmanahmed:circularprogressview:2.3.2'
     compile 'org.bytedeco:javacv:1.1'
     compile 'com.etsy.android.grid:library:1.0.5'
+    compile 'com.google.android.gms:play-services-gcm:8.3.0'
 }

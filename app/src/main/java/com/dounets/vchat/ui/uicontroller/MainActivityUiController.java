@@ -1,14 +1,19 @@
 package com.dounets.vchat.ui.uicontroller;
 
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.Toast;
 
 import com.dounets.vchat.R;
 import com.dounets.vchat.ui.activity.MainActivity;
+import com.dounets.vchat.ui.adapter.ContactAdapter;
+import com.dounets.vchat.ui.adapter.SampleData;
 import com.etsy.android.grid.StaggeredGridView;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -18,6 +23,10 @@ import butterknife.ButterKnife;
  */
 public class MainActivityUiController implements View.OnClickListener, AbsListView.OnScrollListener, AbsListView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     MainActivity activity;
+    ContactAdapter adapter;
+    ArrayList<String> data;
+    boolean mHasRequestedMore;
+    private String TAG = MainActivityUiController.class.getSimpleName();
 
     @Bind(R.id.toolbar)
     Toolbar toolBar;
@@ -25,14 +34,28 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
     @Bind(R.id.grid_view)
     StaggeredGridView gridView;
 
-    public MainActivityUiController(MainActivity activity) {
+    public MainActivityUiController(MainActivity activity, ContactAdapter adapter) {
         this.activity = activity;
+        this.adapter = adapter;
         ButterKnife.bind(this, activity);
         init();
     }
 
     private void init() {
         initToolbar();
+
+        if (data == null) {
+            data = SampleData.generateSampleData();
+        }
+
+        for (String _data : data) {
+            adapter.add(_data);
+        }
+
+        gridView.setAdapter(adapter);
+        gridView.setOnScrollListener(this);
+        gridView.setOnItemClickListener(this);
+        gridView.setOnItemLongClickListener(this);
     }
 
     private void initToolbar() {
@@ -51,22 +74,48 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+    public void onScrollStateChanged(final AbsListView view, final int scrollState) {
+        Log.d(TAG, "onScrollStateChanged:" + scrollState);
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        return false;
+    public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount, final int totalItemCount) {
+        Log.d(TAG, "onScroll firstVisibleItem:" + firstVisibleItem +
+                " visibleItemCount:" + visibleItemCount +
+                " totalItemCount:" + totalItemCount);
+        // our handling
+        if (!mHasRequestedMore) {
+            int lastInScreen = firstVisibleItem + visibleItemCount;
+            if (lastInScreen >= totalItemCount) {
+                Log.d(TAG, "onScroll lastInScreen - so load more");
+                mHasRequestedMore = true;
+                onLoadMoreItems();
+            }
+        }
+    }
+
+    private void onLoadMoreItems() {
+//        final ArrayList<String> sampleData = SampleData.generateSampleData();
+//        for (String data : sampleData) {
+//            adapter.add(data);
+//        }
+//        // stash all the data in our backing store
+//        data.addAll(sampleData);
+//        // notify the adapter that we can update now
+//        adapter.notifyDataSetChanged();
+        mHasRequestedMore = false;
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Toast.makeText(activity, "Item Clicked: " + position, Toast.LENGTH_SHORT).show();
+        activity.onClickRecord();
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Toast.makeText(activity, "Item Long Clicked: " + position, Toast.LENGTH_SHORT).show();
+        return true;
     }
 }

@@ -14,8 +14,8 @@ import com.raizlabs.android.dbflow.structure.cache.BaseCacheableModel;
 
 @Table(databaseName = LocalStoreUtil.NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User extends BaseCacheableModel {
-    static User currentUser;
+public class Contact extends BaseCacheableModel {
+    static Contact currentUser;
 
     @Column
     @PrimaryKey
@@ -30,13 +30,13 @@ public class User extends BaseCacheableModel {
     @Column
     String mobile_id;
 
-    public static User find(long id) {
+    public static Contact find(long id) {
         com.raizlabs.android.dbflow.sql.builder.Condition condition = com.raizlabs.android.dbflow.sql.builder.Condition.column("id").eq(id);
-        User user = new Select().from(User.class).where(condition).querySingle();
+        Contact user = new Select().from(Contact.class).where(condition).querySingle();
         return user;
     }
 
-    public static User currentUser() {
+    public static Contact currentUser() {
         if (currentUser != null) {
             return currentUser;
         }
@@ -48,7 +48,7 @@ public class User extends BaseCacheableModel {
             return null;
         }
 
-        currentUser = User.find(id);
+        currentUser = Contact.find(id);
         if (currentUser == null) {
             return null;
         }

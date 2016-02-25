@@ -21,4 +21,6 @@
     <color name="yellow">#F1C40F</color>
     <color name="yellow_dark">#B3A500</color>
     <color name="blue_dark">#0077B3</color>
+    <color name="orange">#ffffdc7e</color>
+    <color name="list_item_pressed">#1A000000</color>
 </resources>

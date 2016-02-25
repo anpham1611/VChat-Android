@@ -1,6 +1,6 @@
 package com.dounets.vchat.data;
 
-import com.dounets.vchat.data.model.User;
+import com.dounets.vchat.data.model.Contact;
 import com.dounets.vchat.net.api.ApiError;
 import com.raizlabs.android.dbflow.annotation.Database;
 import com.raizlabs.android.dbflow.sql.language.BaseModelQueriable;
@@ -29,7 +29,7 @@ public class LocalStoreUtil {
     }
 
     public static void clearAll() {
-        new Delete().from(User.class).query();
+        new Delete().from(Contact.class).query();
     }
 
     public static <T extends Model> Task<List<T>> queryInBackgroud(final BaseModelQueriable<T> queriable, final Class<T> model) throws ApiError {
