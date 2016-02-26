@@ -52,7 +52,4 @@ dependencies {
     compile 'org.bytedeco:javacv:1.1'
     compile 'com.etsy.android.grid:library:1.0.5'
     compile 'com.google.android.gms:play-services-gcm:8.3.0'
-    compile files('libs/aws-android-sdk-core-2.2.12.jar')
-    compile files('libs/aws-android-sdk-s3-2.2.12.jar')
-    compile files('libs/aws-android-sdk-cognito-2.2.12.jar')
 }

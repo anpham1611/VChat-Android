@@ -938,25 +938,16 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 				startActivity(intent);
 
 				/*Upload video file to S3*/
-				S3Uploader.uploadFileToS3InBackground(strVideoPath).onSuccessTask(new Continuation<String, Task<Object>>() {
+				S3Uploader.uploadVideoFileToS3(strVideoPath).onSuccess(new Continuation() {
 					@Override
-					public Task<Object> then(Task<String> task) throws Exception {
-						// Send request upload success to server ?
+					public Object then(Task task) throws Exception {
+						Toast.makeText(FFmpegRecorderActivity.this, "Done 1", Toast.LENGTH_SHORT).show();
 						return null;
 					}
-				}).continueWith(new Continuation<Object, Void>() {
+				}).continueWith(new Continuation() {
 					@Override
-					public Void then(final Task<Object> task) throws Exception {
-						runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								if (task.isFaulted()) {
-									return;
-								}
-								Toast.makeText(FFmpegRecorderActivity.this, "Send video successfully!", Toast.LENGTH_LONG);
-								finish();
-							}
-						});
+					public Object then(Task task) throws Exception {
+						Toast.makeText(FFmpegRecorderActivity.this, "Done 2", Toast.LENGTH_SHORT).show();
 						return null;
 					}
 				});
