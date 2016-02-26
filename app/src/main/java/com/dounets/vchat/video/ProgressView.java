@@ -37,7 +37,7 @@ public class ProgressView extends View
 	private float firstWidth = 4f, threeWidth = 1f;
 	private LinkedList<Integer> linkedList = new LinkedList<Integer>();
 	private float perPixel = 0l;
-	private float countRecorderTime = 6000;
+	private float countRecorderTime = 3000;
 
 	public void setTotalTime(float time){
 		countRecorderTime = time;
