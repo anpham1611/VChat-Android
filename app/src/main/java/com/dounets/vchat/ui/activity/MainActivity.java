@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.dounets.vchat.R;
@@ -131,7 +132,7 @@ public class MainActivity extends PrimaryActivity {
         });
     }
 
-    public void onClickRecord() {
+    public void onClickRecord(long id) {
         Intent i = new Intent(MainActivity.this, FFmpegRecorderActivity.class);
         startActivity(i);
     }

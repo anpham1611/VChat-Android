@@ -2,19 +2,19 @@ package com.dounets.vchat.ui.uicontroller;
 
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dounets.vchat.R;
 import com.dounets.vchat.data.model.Contact;
 import com.dounets.vchat.ui.activity.MainActivity;
 import com.dounets.vchat.ui.adapter.ContactAdapter;
-import com.dounets.vchat.ui.adapter.SampleData;
 import com.etsy.android.grid.StaggeredGridView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -36,6 +36,9 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
     @Bind(R.id.grid_view)
     StaggeredGridView gridView;
 
+    ImageView imvGroup;
+    ImageView imvUser;
+
     public MainActivityUiController(MainActivity activity, ContactAdapter adapter) {
         this.activity = activity;
         this.adapter = adapter;
@@ -45,10 +48,18 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
 
     private void init() {
         initToolbar();
+
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        View header = layoutInflater.inflate(R.layout.list_header, null);
+        imvUser = ButterKnife.findById(header, R.id.im_user);
+        imvGroup = ButterKnife.findById(header, R.id.im_group);
+
+        gridView.addHeaderView(header);
         gridView.setAdapter(adapter);
         gridView.setOnScrollListener(this);
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
+        imvGroup.setOnClickListener(this);
     }
 
     private void initToolbar() {
@@ -63,6 +74,13 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
+            case R.id.im_user:
+                break;
+
+            case R.id.im_group:
+                activity.onClickRecord(0);
+                break;
 
             default:
                 activity.onBackPressed();
@@ -92,27 +110,21 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
     }
 
     private void onLoadMoreItems() {
-//        final ArrayList<String> sampleData = SampleData.generateSampleData();
-//        for (String data : sampleData) {
-//            adapter.add(data);
-//        }
-//        // stash all the data in our backing store
-//        data.addAll(sampleData);
-//        // notify the adapter that we can update now
-//        adapter.notifyDataSetChanged();
         mHasRequestedMore = false;
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Toast.makeText(activity, "Item Clicked: " + position, Toast.LENGTH_SHORT).show();
-        activity.onClickRecord();
+//        Toast.makeText(activity, "Item Clicked: - position: " + position + " - id: " + id, Toast.LENGTH_SHORT).show();
+        if (position != 0) {
+            activity.onClickRecord(id);
+        }
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Toast.makeText(activity, "Item Long Clicked: " + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(activity, "Item Long Clicked: " + position, Toast.LENGTH_SHORT).show();
         return true;
     }
 }

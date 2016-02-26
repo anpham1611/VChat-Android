@@ -8,12 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.dounets.vchat.R;
 import com.dounets.vchat.data.model.Contact;
-import com.dounets.vchat.ui.activity.BaseActivity;
 import com.etsy.android.grid.util.DynamicHeightTextView;
 
 import java.util.ArrayList;
@@ -51,12 +48,11 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
         super(context, 0, arrContacts);
         mLayoutInflater = LayoutInflater.from(context);
         mRandom = new Random();
-        mBackgroundColors = new ArrayList<Integer>();
+        mBackgroundColors = new ArrayList<>();
         mBackgroundColors.add(R.color.orange);
         mBackgroundColors.add(R.color.green);
         mBackgroundColors.add(R.color.blue);
         mBackgroundColors.add(R.color.yellow);
-        mBackgroundColors.add(R.color.grey);
     }
 
     @Override
@@ -64,7 +60,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 
         ViewHolder vh;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.list_item_sample, parent, false);
+            convertView = mLayoutInflater.inflate(R.layout.list_item, parent, false);
             vh = new ViewHolder(convertView);
             convertView.setTag(vh);
         }

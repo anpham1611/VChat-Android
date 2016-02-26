@@ -104,7 +104,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 	private int defaultScreenResolution = -1;
 	private int cameraSelection = 1;
 	private int frameRate = 30;
-	private int totalRecordingTime = 6000;
+	private int totalRecordingTime = 3000;
 	private int minRecordingTime = 3000;
 
 	private long firstTime = 0;

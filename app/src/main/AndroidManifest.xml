@@ -43,18 +43,18 @@
         android:theme="@style/PrimaryActivity">
 
         <!-- Custom Meta Data -->
-        <!--<meta-data
+        <meta-data
             android:name="API_SCHEME"
             android:value="https" />
         <meta-data
             android:name="API_DOMAIN"
-            android:value="morning-meadow-28417.herokuapp.com" />-->
-        <meta-data
+            android:value="morning-meadow-28417.herokuapp.com" />
+        <!--<meta-data
             android:name="API_SCHEME"
             android:value="http" />
         <meta-data
             android:name="API_DOMAIN"
-            android:value="192.168.1.178:5000" />
+            android:value="192.168.1.178:5000" />-->
 
         <activity
             android:name=".ui.activity.SignInActivity"
