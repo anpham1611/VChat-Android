@@ -7,10 +7,12 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dounets.vchat.R;
 import com.dounets.vchat.data.model.Contact;
+import com.dounets.vchat.helper.SharedPreferenceUtils;
 import com.dounets.vchat.ui.activity.MainActivity;
 import com.dounets.vchat.ui.adapter.ContactAdapter;
 import com.etsy.android.grid.StaggeredGridView;
@@ -38,6 +40,7 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
 
     ImageView imvGroup;
     ImageView imvUser;
+    TextView tvUserName;
 
     public MainActivityUiController(MainActivity activity, ContactAdapter adapter) {
         this.activity = activity;
@@ -53,6 +56,8 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
         View header = layoutInflater.inflate(R.layout.list_header, null);
         imvUser = ButterKnife.findById(header, R.id.im_user);
         imvGroup = ButterKnife.findById(header, R.id.im_group);
+        tvUserName = ButterKnife.findById(header, R.id.tvUserName);
+        tvUserName.setText(SharedPreferenceUtils.getString("user_name"));
 
         gridView.addHeaderView(header);
         gridView.setAdapter(adapter);
