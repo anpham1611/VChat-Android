@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,8 +158,9 @@ public class MainActivity extends PrimaryActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RECORD_REQUEST && resultCode == RESULT_OK) {
+            final String videoPath = data.getStringExtra("video_path");
             showLoadingMessage(R.string.sending);
-            S3Uploader.uploadFileToS3InBackground(data.getStringExtra("video_path"), mListUserIds).onSuccessTask(new Continuation<String, Task<ApiResponse>>() {
+            S3Uploader.uploadFileToS3InBackground(videoPath, mListUserIds).onSuccessTask(new Continuation<String, Task<ApiResponse>>() {
                 @Override
                 public Task<ApiResponse> then(Task<String> task) throws Exception {
                     JSONObject objectRes = new JSONObject(String.valueOf(task.getResult()));
@@ -179,6 +181,10 @@ public class MainActivity extends PrimaryActivity {
                                 return;
                             }
                             Toast.makeText(MainActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+
+                            // Delete file
+                            File file = new File(videoPath);
+                            boolean deleted = file.delete();
                         }
                     });
                     return null;

@@ -128,32 +128,32 @@ public class FFmpegPreviewActivity extends Activity implements TextureView.Surfa
 //                Toast.makeText(FFmpegPreviewActivity.this, getResources().getString(R.string.video_saved_path) + " " + path, Toast.LENGTH_SHORT).show();
 
                 /*Upload video file to S3*/
-                S3Uploader.uploadFileToS3InBackground(path, mListUserIds).onSuccessTask(new Continuation<String, Task<ApiResponse>>() {
-                    @Override
-                    public Task<ApiResponse> then(Task<String> task) throws Exception {
-                        JSONObject objectRes = new JSONObject(String.valueOf(task.getResult()));
-
-                        return ApiHelper.doRequestSendPush(objectRes.getString("name"), objectRes.getString("users"));
-
-                    }
-
-                }).continueWith(new Continuation<ApiResponse, Void>() {
-                    @Override
-                    public Void then(final Task<ApiResponse> task) throws Exception {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (task.isFaulted()) {
-                                    Toast.makeText(FFmpegPreviewActivity.this, "Send video failed!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                Toast.makeText(FFmpegPreviewActivity.this, "Send video successfully!", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                        });
-                        return null;
-                    }
-                });
+//                S3Uploader.uploadFileToS3InBackground(path, mListUserIds).onSuccessTask(new Continuation<String, Task<ApiResponse>>() {
+//                    @Override
+//                    public Task<ApiResponse> then(Task<String> task) throws Exception {
+//                        JSONObject objectRes = new JSONObject(String.valueOf(task.getResult()));
+//
+//                        return ApiHelper.doRequestSendPush(objectRes.getString("name"), objectRes.getString("users"));
+//
+//                    }
+//
+//                }).continueWith(new Continuation<ApiResponse, Void>() {
+//                    @Override
+//                    public Void then(final Task<ApiResponse> task) throws Exception {
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (task.isFaulted()) {
+//                                    Toast.makeText(FFmpegPreviewActivity.this, "Send video failed!", Toast.LENGTH_SHORT).show();
+//                                    return;
+//                                }
+//                                Toast.makeText(FFmpegPreviewActivity.this, "Send video successfully!", Toast.LENGTH_SHORT).show();
+//                                finish();
+//                            }
+//                        });
+//                        return null;
+//                    }
+//                });
 
                 finish();
                 break;
