@@ -22,14 +22,13 @@ import com.dounets.vchat.R;
 import com.dounets.vchat.net.api.ApiResponse;
 import com.dounets.vchat.net.helper.ApiHelper;
 import com.dounets.vchat.net.helper.S3Uploader;
-import com.dounets.vchat.ui.activity.PrimaryActivity;
 
 import org.json.JSONObject;
 
 import bolts.Continuation;
 import bolts.Task;
 
-public class FFmpegPreviewActivity extends PrimaryActivity implements TextureView.SurfaceTextureListener
+public class FFmpegPreviewActivity extends Activity implements TextureView.SurfaceTextureListener
         , OnClickListener, OnCompletionListener {
 
     private String path;
@@ -128,7 +127,6 @@ public class FFmpegPreviewActivity extends PrimaryActivity implements TextureVie
             case R.id.play_finish:
 //                Toast.makeText(FFmpegPreviewActivity.this, getResources().getString(R.string.video_saved_path) + " " + path, Toast.LENGTH_SHORT).show();
 
-                showLoadingMessage(R.string.sending);
                 /*Upload video file to S3*/
                 S3Uploader.uploadFileToS3InBackground(path, mListUserIds).onSuccessTask(new Continuation<String, Task<ApiResponse>>() {
                     @Override
@@ -145,7 +143,6 @@ public class FFmpegPreviewActivity extends PrimaryActivity implements TextureVie
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                dismissLoadingMessage();
                                 if (task.isFaulted()) {
                                     Toast.makeText(FFmpegPreviewActivity.this, "Send video failed!", Toast.LENGTH_SHORT).show();
                                     return;

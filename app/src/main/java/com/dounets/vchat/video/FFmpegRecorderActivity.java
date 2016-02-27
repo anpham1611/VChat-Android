@@ -929,11 +929,11 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 		try{
 			setActivityResult(valid);
 			if(valid){
-				Intent intent = new Intent(this, FFmpegPreviewActivity.class);
-				intent.putExtra("path", strVideoPath);
-				intent.putExtra("imagePath", imagePath);
-				intent.putExtra("list_user_send", mListUserIds);
-				startActivity(intent);
+//				Intent intent = new Intent(this, FFmpegPreviewActivity.class);
+//				intent.putExtra("path", strVideoPath);
+//				intent.putExtra("imagePath", imagePath);
+//				intent.putExtra("list_user_send", mListUserIds);
+//				startActivity(intent);
 			}
 		}catch (Throwable e){
 			e.printStackTrace();
@@ -949,7 +949,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 		if (valid)
 		{
 			resultCode = RESULT_OK;
-			resultIntent.setData(uriVideoPath);
+			resultIntent.putExtra("video_path", strVideoPath);
 		} else
 			resultCode = RESULT_CANCELED;
 		

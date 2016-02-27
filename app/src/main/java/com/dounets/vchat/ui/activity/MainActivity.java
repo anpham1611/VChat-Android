@@ -18,6 +18,7 @@ import com.dounets.vchat.gcm.GcmIntentService;
 import com.dounets.vchat.helper.SharedPreferenceUtils;
 import com.dounets.vchat.net.api.ApiResponse;
 import com.dounets.vchat.net.helper.ApiHelper;
+import com.dounets.vchat.net.helper.S3Uploader;
 import com.dounets.vchat.ui.adapter.ContactAdapter;
 import com.dounets.vchat.ui.uicontroller.MainActivityUiController;
 import com.dounets.vchat.video.FFmpegRecorderActivity;
@@ -39,9 +40,11 @@ public class MainActivity extends PrimaryActivity {
     private MainActivityUiController uiController;
     private String TAG = MainActivity.class.getSimpleName();
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final int RECORD_REQUEST = 10000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private List<Contact> mData;
     private ContactAdapter mAdapter;
+    private String mListUserIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +136,7 @@ public class MainActivity extends PrimaryActivity {
     }
 
     public void onClickRecord(long id) {
-        String listIds = "" + id;
+        mListUserIds = "" + id;
         if (id == 0) {
             // All users
             List<String> inputArray = new ArrayList<>();
@@ -141,12 +144,47 @@ public class MainActivity extends PrimaryActivity {
                 inputArray.add(mData.get(i).getId().toString());
             }
             if(inputArray.size() > 0) {
-                listIds = implodeArray(inputArray, ",");
+                mListUserIds = implodeArray(inputArray, ",");
             }
         }
         Intent i = new Intent(MainActivity.this, FFmpegRecorderActivity.class);
-        i.putExtra("list_user_send", listIds);
-        startActivity(i);
+        i.putExtra("list_user_send", mListUserIds);
+        startActivityForResult(i, RECORD_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RECORD_REQUEST && resultCode == RESULT_OK) {
+            showLoadingMessage(R.string.sending);
+            S3Uploader.uploadFileToS3InBackground(data.getStringExtra("video_path"), mListUserIds).onSuccessTask(new Continuation<String, Task<ApiResponse>>() {
+                @Override
+                public Task<ApiResponse> then(Task<String> task) throws Exception {
+                    JSONObject objectRes = new JSONObject(String.valueOf(task.getResult()));
+
+                    return ApiHelper.doRequestSendPush(objectRes.getString("name"), objectRes.getString("users"));
+
+                }
+
+            }).continueWith(new Continuation<ApiResponse, Void>() {
+                @Override
+                public Void then(final Task<ApiResponse> task) throws Exception {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissLoadingMessage();
+                            if (task.isFaulted()) {
+                                Toast.makeText(MainActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            Toast.makeText(MainActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    return null;
+                }
+            });
+        }
     }
 
     private static String implodeArray(List<String> inputArray, String glueString) {
