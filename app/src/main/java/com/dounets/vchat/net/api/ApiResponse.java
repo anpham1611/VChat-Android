@@ -20,7 +20,7 @@ public class ApiResponse {
 
     ApiResponse(Response response) {
         headers = response.headers().toMultimap();
-//        body = getUngzippedBody(response);
+//        body = getUnGZippedBody(response);
         try {
             body = response.body().string();
         } catch (IOException e) {
@@ -32,7 +32,7 @@ public class ApiResponse {
         return body;
     }
 
-    private String getUngzippedBody(Response response) {
+    private String getUnGZippedBody(Response response) {
         InputStream is = null;
         ByteArrayOutputStream baos = null;
         try {

@@ -1,51 +1,73 @@
 package com.dounets.vchat.net.helper;
 
-import android.net.Uri;
-
+import com.dounets.vchat.net.api.ApiClient;
+import com.dounets.vchat.net.api.ApiRequest;
+import com.dounets.vchat.net.api.ApiResponse;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONObject;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 
+import bolts.Continuation;
 import bolts.Task;
-
 
 public class S3Uploader extends BaseHelper {
 
-    public static Task uploadVideoFileToS3(String filePath) throws UnsupportedEncodingException {
+    public static Task<String> uploadFileToS3InBackground(final String filePath) {
+        final Task<String>.TaskCompletionSource uploadTask = Task.create();
 
-        /*{ "accessKeyId": "AKIAJ3IIQ6LBN5ELXH3Q", "secretAccessKey": "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", "region": "ap-southeast-1" }
-        bucketname: scsklvchat*/
+        final AtomicReference<String> pathRef = new AtomicReference<>();
+        final AtomicReference<String> urlRef = new AtomicReference<>();
 
-        String accessKeyId = "AKIAJ3IIQ6LBN5ELXH3Q";
-        String secretAccessKey = URLEncoder.encode("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", "UTF-8");
-        String fileName = new Date().getTime() + ".mp4";
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DATE, 1);
-        long secondsSinceEpoch = cal.getTimeInMillis() / 1000L;
-        final String ENDPOINT = "https://scsklvchat.s3-ap-southeast-1.amazonaws.com/" + fileName + "?AWSAccessKeyId=" + accessKeyId + "&Content-Type=" + URLEncoder.encode("video/mp4", "UTF-8") +"&Signature=" + secretAccessKey + "&x-amz-acl=public-read&Expires=" + secondsSinceEpoch;
-
-        final File file = new File(filePath);
-        return Task.callInBackground(new Callable<Void>() {
+        HashMap<String, String> params = new HashMap<>();
+        ApiRequest request = new ApiRequest(ApiRequest.Method.GET, getPrefixUrl() + "pre_signed_url", params);
+        ApiClient.callInBackground(request).onSuccessTask(new Continuation<ApiResponse, Task<Void>>() {
             @Override
-            public Void call() throws Exception {
-                Request request = new Request.Builder()
-                        .url(ENDPOINT)
-                        .put(RequestBody.create(MediaType.parse("video/mp4"), file))
-                        .build();
-                new OkHttpClient().newCall(request).execute();
+            public Task<Void> then(Task<ApiResponse> task) throws Exception {
+                JSONObject json = new JSONObject(task.getResult().getBody());
+                pathRef.set(json.getString("name"));
+                urlRef.set(json.getString("url"));
+                return uploadVideoFileToS3(urlRef.get(), filePath);
+
+            }
+        }).continueWith(new Continuation<Void, Object>() {
+            @Override
+            public Object then(Task<Void> task) throws Exception {
+                if (task.isFaulted()) {
+                    uploadTask.setError(task.getError());
+                } else {
+                    uploadTask.setResult(pathRef.get());
+                }
                 return null;
             }
         });
+        return uploadTask.getTask();
+    }
+
+    private static Task uploadVideoFileToS3(final String presignedUrl, final String filePath) {
+        final File file = new File(filePath);
+        if(file.exists()) {
+            return Task.callInBackground(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    Request request = new Request.Builder()
+                            .url(presignedUrl)
+                            .put(RequestBody.create(MediaType.parse("application/octet-stream"), file))
+                            .build();
+
+                    Response response = new OkHttpClient().newCall(request).execute();
+                    return null;
+                }
+            });
+        }
+        return null;
     }
 }
-

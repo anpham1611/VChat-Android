@@ -19,6 +19,12 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Toast;
 
 import com.dounets.vchat.R;
+import com.dounets.vchat.net.api.ApiResponse;
+import com.dounets.vchat.net.helper.ApiHelper;
+import com.dounets.vchat.net.helper.S3Uploader;
+
+import bolts.Continuation;
+import bolts.Task;
 
 public class FFmpegPreviewActivity extends Activity implements TextureView.SurfaceTextureListener
         , OnClickListener, OnCompletionListener {
@@ -115,7 +121,32 @@ public class FFmpegPreviewActivity extends Activity implements TextureView.Surfa
                 stop();
                 break;
             case R.id.play_finish:
-                Toast.makeText(FFmpegPreviewActivity.this, getResources().getString(R.string.video_saved_path) + " " + path, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(FFmpegPreviewActivity.this, getResources().getString(R.string.video_saved_path) + " " + path, Toast.LENGTH_SHORT).show();
+
+                /*Upload video file to S3*/
+                S3Uploader.uploadFileToS3InBackground(path).onSuccessTask(new Continuation<String, Task<ApiResponse>>() {
+                    @Override
+                    public Task<ApiResponse> then(Task<String> task) throws Exception {
+                        return ApiHelper.doRequestSendPush(String.valueOf(task.getResult()));
+                    }
+
+                }).continueWith(new Continuation<ApiResponse, Void>() {
+                    @Override
+                    public Void then(final Task<ApiResponse> task) throws Exception {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (task.isFaulted()) {
+                                    return;
+                                }
+                                Toast.makeText(FFmpegPreviewActivity.this, "Send video successfully!", Toast.LENGTH_LONG);
+                                finish();
+                            }
+                        });
+                        return null;
+                    }
+                });
+
                 finish();
                 break;
             case R.id.previre_play:

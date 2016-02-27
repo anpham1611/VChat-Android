@@ -45,10 +45,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dounets.vchat.R;
-import com.dounets.vchat.net.helper.S3Uploader;
 
 import org.bytedeco.javacv.FrameRecorder;
 
@@ -61,9 +59,6 @@ import java.nio.Buffer;
 import java.nio.ShortBuffer;
 import java.util.Collections;
 import java.util.List;
-
-import bolts.Continuation;
-import bolts.Task;
 
 /**
  * Created by Sourab Sharma (sourab.sharma@live.in)  on 1/19/2016.
@@ -936,22 +931,6 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 				intent.putExtra("path", strVideoPath);
 				intent.putExtra("imagePath", imagePath);
 				startActivity(intent);
-
-				/*Upload video file to S3*/
-				S3Uploader.uploadVideoFileToS3(strVideoPath).onSuccess(new Continuation() {
-					@Override
-					public Object then(Task task) throws Exception {
-						Toast.makeText(FFmpegRecorderActivity.this, "Done 1", Toast.LENGTH_SHORT).show();
-						return null;
-					}
-				}).continueWith(new Continuation() {
-					@Override
-					public Object then(Task task) throws Exception {
-						Toast.makeText(FFmpegRecorderActivity.this, "Done 2", Toast.LENGTH_SHORT).show();
-						return null;
-					}
-				});
-
 			}
 		}catch (Throwable e){
 			e.printStackTrace();
