@@ -137,9 +137,10 @@ public class FFmpegPreviewActivity extends Activity implements TextureView.Surfa
                             @Override
                             public void run() {
                                 if (task.isFaulted()) {
+                                    Toast.makeText(FFmpegPreviewActivity.this, "Send video failed!", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                Toast.makeText(FFmpegPreviewActivity.this, "Send video successfully!", Toast.LENGTH_LONG);
+                                Toast.makeText(FFmpegPreviewActivity.this, "Send video successfully!", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
                         });
