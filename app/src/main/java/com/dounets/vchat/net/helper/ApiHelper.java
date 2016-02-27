@@ -26,10 +26,10 @@ public class ApiHelper extends BaseHelper {
         return ApiClient.callInBackground(request);
     }
 
-    public static final Task<ApiResponse> doRequestSendPush(String videoName) {
+    public static final Task<ApiResponse> doRequestSendPush(String videoName, String listUserIds) {
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", SharedPreferenceUtils.getString("user_id"));
-        params.put("send_user_list", "[{\"id\": 2}]");
+        params.put("send_user_list", listUserIds);
         params.put("video", videoName);
         ApiRequest request = new ApiRequest(ApiRequest.Method.POST, getPrefixUrl() + "send_video", params);
         return ApiClient.callInBackground(request);

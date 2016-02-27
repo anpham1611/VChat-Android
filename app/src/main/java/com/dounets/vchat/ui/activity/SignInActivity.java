@@ -144,7 +144,7 @@ public class SignInActivity extends PrimaryActivity {
                     @Override
                     public void run() {
                         if (task.isFaulted()) {
-                            Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(), "Connect server failed. Please try again!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 

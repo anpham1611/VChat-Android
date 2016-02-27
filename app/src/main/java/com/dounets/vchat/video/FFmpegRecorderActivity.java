@@ -132,6 +132,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 	// The degrees of the device rotated clockwise from its natural orientation.
 	private int deviceOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
 	private Handler mHandler;
+	private String mListUserIds;
 
 	private void initHandler(){
 		mHandler = new Handler(){
@@ -227,6 +228,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 		screenWidth = displaymetrics.widthPixels;
 
 		orientationListener = new DeviceOrientationEventListener(FFmpegRecorderActivity.this);
+		mListUserIds = getIntent().getStringExtra("list_user_send");
 
 		initHandler();
 		
@@ -930,6 +932,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 				Intent intent = new Intent(this, FFmpegPreviewActivity.class);
 				intent.putExtra("path", strVideoPath);
 				intent.putExtra("imagePath", imagePath);
+				intent.putExtra("list_user_send", mListUserIds);
 				startActivity(intent);
 			}
 		}catch (Throwable e){

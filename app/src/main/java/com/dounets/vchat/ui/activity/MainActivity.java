@@ -133,8 +133,40 @@ public class MainActivity extends PrimaryActivity {
     }
 
     public void onClickRecord(long id) {
+        String listIds = "" + id;
+        if (id == 0) {
+            // All users
+            List<String> inputArray = new ArrayList<>();
+            for (int i=0; i<mData.size(); i++) {
+                inputArray.add(mData.get(i).getId().toString());
+            }
+            if(inputArray.size() > 0) {
+                listIds = implodeArray(inputArray, ",");
+            }
+        }
         Intent i = new Intent(MainActivity.this, FFmpegRecorderActivity.class);
+        i.putExtra("list_user_send", listIds);
         startActivity(i);
+    }
+
+    private static String implodeArray(List<String> inputArray, String glueString) {
+
+        /** Output variable */
+        String output = "";
+
+        if (inputArray.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(inputArray.get(0));
+
+            for (int i=1; i<inputArray.size(); i++) {
+                sb.append(glueString);
+                sb.append(inputArray.get(i));
+            }
+
+            output = sb.toString();
+        }
+
+        return output;
     }
 
     @Override

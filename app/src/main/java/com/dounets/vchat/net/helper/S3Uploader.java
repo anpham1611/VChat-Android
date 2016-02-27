@@ -21,7 +21,7 @@ import bolts.Task;
 
 public class S3Uploader extends BaseHelper {
 
-    public static Task<String> uploadFileToS3InBackground(final String filePath) {
+    public static Task<String> uploadFileToS3InBackground(final String filePath, final String listUserIds) {
         final Task<String>.TaskCompletionSource uploadTask = Task.create();
 
         final AtomicReference<String> pathRef = new AtomicReference<>();
@@ -44,7 +44,12 @@ public class S3Uploader extends BaseHelper {
                 if (task.isFaulted()) {
                     uploadTask.setError(task.getError());
                 } else {
-                    uploadTask.setResult(pathRef.get());
+
+                    JSONObject objectRes = new JSONObject();
+                    objectRes.put("name", pathRef.get());
+                    objectRes.put("users", listUserIds);
+
+                    uploadTask.setResult(objectRes.toString());
                 }
                 return null;
             }
