@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:background="@color/black"
     android:layout_height="match_parent">
-
 
     <VideoView
         android:id="@+id/video_player_view"
@@ -11,6 +11,16 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        android:visibility="gone"
+        android:id="@+id/progress_view"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        app:cpv_animAutostart="true"
+        app:cpv_color="@color/blue"
+        app:cpv_indeterminate="true" />
 
     <!--<Button-->
         <!--android:id="@+id/button1"-->
