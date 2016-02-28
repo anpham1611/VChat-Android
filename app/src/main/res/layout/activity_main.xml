@@ -32,7 +32,6 @@
             android:id="@+id/grid_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:item_margin="4dp"
             app:column_count="2" />
 
     </RelativeLayout>

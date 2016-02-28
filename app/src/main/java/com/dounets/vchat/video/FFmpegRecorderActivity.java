@@ -87,7 +87,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 	private boolean isRecordingStarted = false;
 	private boolean isFlashOn = false;
 	private boolean isRotateVideo = false;
-	private boolean isFrontCam = false;
+	private boolean isFrontCam = true;
 	private boolean isPreviewOn = false;
 	private boolean nextEnabled = false;
 	private boolean recordFinish = false;
@@ -102,9 +102,9 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 	private int sampleRate = 44100;
 	private int defaultCameraId = -1;
 	private int defaultScreenResolution = -1;
-	private int cameraSelection = 0;
+	private int cameraSelection = 1;
 	private int frameRate = 30;
-	private int totalRecordingTime = 6000;
+	private int totalRecordingTime = 3000;
 	private int minRecordingTime = 3000;
 
 	private long firstTime = 0;
@@ -132,6 +132,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 	// The degrees of the device rotated clockwise from its natural orientation.
 	private int deviceOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
 	private Handler mHandler;
+	private String mListUserIds;
 
 	private void initHandler(){
 		mHandler = new Handler(){
@@ -142,18 +143,24 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 					int recorderStateMsg = 0;
 					if(currentRecorderState == RecorderState.RECORDING){
 					recorderStateMsg = R.string.recorder_state_recording;
-					}
-					 else if(currentRecorderState == RecorderState.MINIMUM_RECORDING_REACHED){
-						recorderStateMsg = R.string.recorder_state_min_video_crossed;
-					}else if(currentRecorderState == RecorderState.MINIMUM_RECORDED){
-						recorderStateMsg = R.string.recorder_state_min_recorded;
-					}
-					 else if(currentRecorderState == RecorderState.PRESS){
-						 recorderStateMsg = R.string.recorder_state_press_to_record;
-					 }
-					 else if(currentRecorderState == RecorderState.SUCCESS){
+					} else if(currentRecorderState == RecorderState.SUCCESS){
 						recorderStateMsg = R.string.recorder_state_complete;
+					} else if(currentRecorderState == RecorderState.PRESS){
+						recorderStateMsg = R.string.recorder_state_press_to_record;
+					} else {
+						recorderStateMsg = R.string.recorder_state_recording;
 					}
+//					 else if(currentRecorderState == RecorderState.MINIMUM_RECORDING_REACHED){
+//						recorderStateMsg = R.string.recorder_state_min_video_crossed;
+//					}else if(currentRecorderState == RecorderState.MINIMUM_RECORDED){
+//						recorderStateMsg = R.string.recorder_state_min_recorded;
+//					}
+//					 else if(currentRecorderState == RecorderState.PRESS){
+//						 recorderStateMsg = R.string.recorder_state_press_to_record;
+//					 }
+//					 else if(currentRecorderState == RecorderState.SUCCESS){
+//						recorderStateMsg = R.string.recorder_state_complete;
+//					}
 					stateTextView.setText(getResources().getText(recorderStateMsg));
 					break;
 				case 3:
@@ -221,6 +228,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 		screenWidth = displaymetrics.widthPixels;
 
 		orientationListener = new DeviceOrientationEventListener(FFmpegRecorderActivity.this);
+		mListUserIds = getIntent().getStringExtra("list_user_send");
 
 		initHandler();
 		
@@ -555,7 +563,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 	@Override
 	public void onBackPressed() {
 		if (isRecordingStarted)
-			showCancellDialog();
+			videoTheEnd(true);
 		else
 			videoTheEnd(false);
 	}
@@ -766,6 +774,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 						recording =false;
 						mHandler.removeMessages(4);
 						mHandler.sendEmptyMessage(4);
+						saveRecording();
 					}
 					
 					break;
@@ -920,10 +929,11 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 		try{
 			setActivityResult(valid);
 			if(valid){
-				Intent intent = new Intent(this,FFmpegPreviewActivity.class);
-				intent.putExtra("path", strVideoPath);
-				intent.putExtra("imagePath", imagePath);
-				startActivity(intent);
+//				Intent intent = new Intent(this, FFmpegPreviewActivity.class);
+//				intent.putExtra("path", strVideoPath);
+//				intent.putExtra("imagePath", imagePath);
+//				intent.putExtra("list_user_send", mListUserIds);
+//				startActivity(intent);
 			}
 		}catch (Throwable e){
 			e.printStackTrace();
@@ -939,7 +949,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 		if (valid)
 		{
 			resultCode = RESULT_OK;
-			resultIntent.setData(uriVideoPath);
+			resultIntent.putExtra("video_path", strVideoPath);
 		} else
 			resultCode = RESULT_CANCELED;
 		

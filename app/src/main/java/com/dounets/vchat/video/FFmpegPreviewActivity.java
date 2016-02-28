@@ -19,6 +19,14 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Toast;
 
 import com.dounets.vchat.R;
+import com.dounets.vchat.net.api.ApiResponse;
+import com.dounets.vchat.net.helper.ApiHelper;
+import com.dounets.vchat.net.helper.S3Uploader;
+
+import org.json.JSONObject;
+
+import bolts.Continuation;
+import bolts.Task;
 
 public class FFmpegPreviewActivity extends Activity implements TextureView.SurfaceTextureListener
         , OnClickListener, OnCompletionListener {
@@ -29,6 +37,7 @@ public class FFmpegPreviewActivity extends Activity implements TextureView.Surfa
     private Button finishBtn;
     private MediaPlayer mediaPlayer;
     private ImageView imagePlay;
+    private String mListUserIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +65,7 @@ public class FFmpegPreviewActivity extends Activity implements TextureView.Surfa
         surfaceView.setOnClickListener(this);
 
         path = getIntent().getStringExtra("path");
+        mListUserIds = getIntent().getStringExtra("list_user_send");
 
         imagePlay = (ImageView) findViewById(R.id.previre_play);
         imagePlay.setOnClickListener(this);
@@ -115,7 +125,36 @@ public class FFmpegPreviewActivity extends Activity implements TextureView.Surfa
                 stop();
                 break;
             case R.id.play_finish:
-                Toast.makeText(FFmpegPreviewActivity.this, getResources().getString(R.string.video_saved_path) + " " + path, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(FFmpegPreviewActivity.this, getResources().getString(R.string.video_saved_path) + " " + path, Toast.LENGTH_SHORT).show();
+
+                /*Upload video file to S3*/
+//                S3Uploader.uploadFileToS3InBackground(path, mListUserIds).onSuccessTask(new Continuation<String, Task<ApiResponse>>() {
+//                    @Override
+//                    public Task<ApiResponse> then(Task<String> task) throws Exception {
+//                        JSONObject objectRes = new JSONObject(String.valueOf(task.getResult()));
+//
+//                        return ApiHelper.doRequestSendPush(objectRes.getString("name"), objectRes.getString("users"));
+//
+//                    }
+//
+//                }).continueWith(new Continuation<ApiResponse, Void>() {
+//                    @Override
+//                    public Void then(final Task<ApiResponse> task) throws Exception {
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (task.isFaulted()) {
+//                                    Toast.makeText(FFmpegPreviewActivity.this, "Send video failed!", Toast.LENGTH_SHORT).show();
+//                                    return;
+//                                }
+//                                Toast.makeText(FFmpegPreviewActivity.this, "Send video successfully!", Toast.LENGTH_SHORT).show();
+//                                finish();
+//                            }
+//                        });
+//                        return null;
+//                    }
+//                });
+
                 finish();
                 break;
             case R.id.previre_play:

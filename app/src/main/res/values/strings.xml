@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">VChat</string>
-    <string name="processing">Processing</string>
+    <string name="processing">Processing...</string>
+    <string name="sending">Sending...</string>
     <string name="error_invalid_name">Please input your name.</string>
     <string name="recorder_state_recording">Recording&#8230;</string>
     <string name="recorder_state_min_recorded">Minimum video recorded.</string>

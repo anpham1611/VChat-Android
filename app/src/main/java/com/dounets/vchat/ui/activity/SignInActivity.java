@@ -57,6 +57,7 @@ public class SignInActivity extends PrimaryActivity {
 
                     //Toast.makeText(getApplicationContext(), "GCM registration token: " + token, Toast.LENGTH_LONG).show();
                     mToken = token;
+                    SharedPreferenceUtils.saveString("token", mToken);
 
                 } else if (intent.getAction().equals(Config.SENT_TOKEN_TO_SERVER)) {
                     // gcm registration id is stored in our server's MySQL
@@ -143,7 +144,7 @@ public class SignInActivity extends PrimaryActivity {
                     @Override
                     public void run() {
                         if (task.isFaulted()) {
-                            Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(), "Connect server failed. Please try again!", Toast.LENGTH_LONG).show();
                             return;
                         }
 
