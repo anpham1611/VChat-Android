@@ -179,11 +179,16 @@ public class NotificationUtils {
 
     // Playing notification sound
     public void playNotificationSound() {
+
         try {
             Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
             // Vibrate for 500 milliseconds
             v.vibrate(500);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
+        try {
             Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + App.getInstance().getApplicationContext().getPackageName() + "/raw/notification");
             Ringtone r = RingtoneManager.getRingtone(App.getInstance().getApplicationContext(), alarmSound);
