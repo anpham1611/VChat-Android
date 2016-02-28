@@ -1,7 +1,9 @@
 package com.dounets.vchat.ui.activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -102,8 +104,31 @@ public class MainActivity extends PrimaryActivity {
     /**
      * Handles new push notification
      */
-    private void handlePushNotification(Intent intent) {
+    private void handlePushNotification(final Intent intent) {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle(R.string.confirm);
+        builder.setMessage(intent.getStringExtra("message"));
+        builder.setPositiveButton("View Now", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                String videoUrl = intent.getStringExtra("video_url");
+                String sendUserId = intent.getStringExtra("send_user_id");
+                String videoId = intent.getStringExtra("video_id");
+
+                Intent resultIntent = new Intent(getApplicationContext(), ReceiveVideoPlay.class);
+                resultIntent.putExtra("video_url", videoUrl);
+                resultIntent.putExtra("send_user_id", sendUserId);
+                resultIntent.putExtra("video_id", videoId);
+                startActivity(resultIntent);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     // subscribing to global topic

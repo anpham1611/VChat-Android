@@ -1,5 +1,6 @@
 package com.dounets.vchat.ui.uicontroller;
 
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,14 @@ public class ReceiveVideoPlayUiController implements View.OnClickListener {
         videoView.setVideoURI(uri2);
         videoView.requestFocus();
         videoView.start();
+
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                activity.callFishReceivedVideo();
+            }
+        });
+
     }
 
     @Override

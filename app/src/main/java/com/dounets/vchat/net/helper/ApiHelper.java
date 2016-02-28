@@ -35,4 +35,13 @@ public class ApiHelper extends BaseHelper {
         return ApiClient.callInBackground(request);
     }
 
+    public static final Task<ApiResponse> doRequestReceivedVideo(String videoId, String sendFromUserId) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", SharedPreferenceUtils.getString("user_id"));
+        params.put("send_from_user_id", sendFromUserId);
+        params.put("video_id", videoId);
+        ApiRequest request = new ApiRequest(ApiRequest.Method.POST, getPrefixUrl() + "received_video", params);
+        return ApiClient.callInBackground(request);
+    }
+
 }
