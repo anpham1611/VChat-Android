@@ -51,6 +51,7 @@ public class MainActivity extends PrimaryActivity {
     private List<Contact> mData;
     private ContactAdapter mAdapter;
     private String mListUserIds;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class MainActivity extends PrimaryActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mContext = this;
         mData = new ArrayList<>();
         mAdapter = new ContactAdapter(this, mData);
         uiController = new MainActivityUiController(this, mAdapter);
@@ -96,7 +98,7 @@ public class MainActivity extends PrimaryActivity {
 
                     } else {
                         // play notification sound
-                        NotificationUtils notificationUtils = new NotificationUtils();
+                        NotificationUtils notificationUtils = new NotificationUtils(mContext);
                         notificationUtils.playNotificationSound();
 
                         // new push notification is received
