@@ -48,7 +48,7 @@ public class ReceiveVideoPlay extends PrimaryActivity {
         });
     }
 
-    public void rePlayVideo() {
-        uiController.playVideo(videoUrl);
+    public void doRequestReply() {
+//        Toast.makeText(this, "Coming soon!", Toast.LENGTH_LONG).show();
     }
 }

@@ -28,8 +28,11 @@ public class ReceiveVideoPlayUiController implements View.OnClickListener {
     @Bind(R.id.progress_view)
     CircularProgressView progressView;
 
-//    @Bind(R.id.button1)
-//    Button button;
+//    @Bind(R.id.btnBack)
+//    Button btnBack;
+
+//    @Bind(R.id.btnReply)
+//    Button btnReply;
 
     public ReceiveVideoPlayUiController(ReceiveVideoPlay activity) {
         this.activity = activity;
@@ -38,7 +41,8 @@ public class ReceiveVideoPlayUiController implements View.OnClickListener {
     }
 
     private void init() {
-//        button.setOnClickListener(this);
+//        btnBack.setOnClickListener(this);
+//        btnReply.setOnClickListener(this);
     }
 
     public void playVideo(String url) {
@@ -79,8 +83,13 @@ public class ReceiveVideoPlayUiController implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.button1:
-//                activity.rePlayVideo();
+
+//            case R.id.btnBack:
+//                activity.finish();
+//                break;
+//
+//            case R.id.btnReply:
+//                activity.doRequestReply();
 //                break;
 
             default:

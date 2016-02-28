@@ -82,7 +82,7 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
         switch (v.getId()) {
 
             case R.id.im_user:
-                Toast.makeText(activity, "Coming soon!", Toast.LENGTH_LONG).show();
+//                Toast.makeText(activity, "Coming soon!", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.im_group:

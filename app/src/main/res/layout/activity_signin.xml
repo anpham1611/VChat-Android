@@ -55,10 +55,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="Go"
-            android:background="#dae084"
-            android:textColor="@color/material_grey_800"
-            android:textSize="16dp"
+            android:text="go"
+            android:textAllCaps="true"
+            android:background="@color/red"
+            android:textColor="@color/white"
+            android:textSize="18dp"
             android:textStyle="bold" />
 
     </LinearLayout>
