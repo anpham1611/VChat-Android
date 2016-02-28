@@ -13,22 +13,13 @@
         android:background="@color/yellow"
         android:orientation="vertical">
         <ImageView
+            android:layout_margin="25dp"
             android:id="@+id/im_user"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_user"/>
-        <TextView
-            android:id="@+id/tvUserName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginBottom="10dp"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="25dp"
-            android:text="Welcome"/>
+            android:src="@drawable/ic_setting"/>
     </LinearLayout>
 
     <LinearLayout

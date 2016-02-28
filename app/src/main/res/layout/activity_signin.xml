@@ -35,8 +35,8 @@
         <ImageView
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:src="@drawable/ic_launcher"/>
 
         <EditText
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="GO"
+            android:text="Go"
             android:background="#dae084"
             android:textColor="@color/material_grey_800"
             android:textSize="16dp"
