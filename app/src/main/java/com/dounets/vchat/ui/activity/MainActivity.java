@@ -144,10 +144,32 @@ public class MainActivity extends PrimaryActivity {
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                String sendUserId = intent.getStringExtra("send_user_id");
+                String videoId = intent.getStringExtra("video_id");
+                callFishReceivedVideo(sendUserId, videoId);
                 dialog.dismiss();
             }
         });
         builder.create().show();
+    }
+
+    public void callFishReceivedVideo(String sendUserId, String videoId) {
+        ApiHelper.doRequestReceivedVideo(videoId, sendUserId).continueWith(new Continuation<ApiResponse, Object>() {
+            @Override
+            public Object then(final Task<ApiResponse> task) throws Exception {
+                dismissLoadingMessage();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (task.isFaulted()) {
+                            Toast.makeText(getBaseContext(), "Connect server failed. Please try again!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+                });
+                return null;
+            }
+        });
     }
 
     // subscribing to global topic

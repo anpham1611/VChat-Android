@@ -40,11 +40,7 @@ public class ReceiveVideoPlay extends PrimaryActivity {
                             Toast.makeText(getBaseContext(), "Connect server failed. Please try again!", Toast.LENGTH_LONG).show();
                             return;
                         }
-
-//                        Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
-
                         finish();
-
                     }
                 });
                 return null;
