@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.dounets.vchat.R;
 import com.dounets.vchat.app.Config;
 import com.dounets.vchat.data.model.Contact;
 import com.dounets.vchat.gcm.GcmIntentService;
+import com.dounets.vchat.gcm.NotificationUtils;
 import com.dounets.vchat.helper.SharedPreferenceUtils;
 import com.dounets.vchat.net.api.ApiResponse;
 import com.dounets.vchat.net.helper.ApiHelper;
@@ -66,10 +68,12 @@ public class MainActivity extends PrimaryActivity {
                 // checking for type intent filter
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
                     // gcm successfully registered
-                    // now subscribe to `global` topic to receive app wide notifications
                     String token = intent.getStringExtra("token");
-
                     //Toast.makeText(getApplicationContext(), "GCM registration token: " + token, Toast.LENGTH_LONG).show();
+
+                    // now subscribe to `global` topic to receive app wide notifications
+                    subscribeToGlobalTopic();
+
 
                 } else if (intent.getAction().equals(Config.SENT_TOKEN_TO_SERVER)) {
                     // gcm registration id is stored in our server's MySQL
@@ -78,7 +82,7 @@ public class MainActivity extends PrimaryActivity {
 
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
                     // new push notification is received
-
+                    handlePushNotification(intent);
                     Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
                 }
             }
@@ -88,6 +92,35 @@ public class MainActivity extends PrimaryActivity {
             registerGCM();
         }
 
+    }
+
+    /**
+     * Handles new push notification
+     */
+    private void handlePushNotification(Intent intent) {
+        int type = intent.getIntExtra("type", -1);
+
+        // if the push is of chat room message
+        // simply update the UI unread messages count
+        if (type == Config.PUSH_TYPE_CHATROOM) {
+
+
+        } else if (type == Config.PUSH_TYPE_USER) {
+            // push belongs to user alone
+            // just showing the message in a toast
+
+            Toast.makeText(getApplicationContext(), "New push: ", Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+    // subscribing to global topic
+    private void subscribeToGlobalTopic() {
+        Intent intent = new Intent(this, GcmIntentService.class);
+        intent.putExtra(GcmIntentService.KEY, GcmIntentService.SUBSCRIBE);
+        intent.putExtra(GcmIntentService.TOPIC, Config.TOPIC_GLOBAL);
+        startService(intent);
     }
 
     private void asyncRequestGetListUsers() {
@@ -147,6 +180,10 @@ public class MainActivity extends PrimaryActivity {
         // by doing this, the activity will be notified each time a new message arrives
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.PUSH_NOTIFICATION));
+
+
+        // clearing the notification tray
+        NotificationUtils.clearNotifications();
     }
 
     @Override
