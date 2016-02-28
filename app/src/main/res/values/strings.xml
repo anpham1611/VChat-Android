@@ -15,5 +15,4 @@
     <string name="alert">Alert</string>
     <string name="discard_video_msg">Would you like to discard recording?</string>
     <string name="video_saved_path">Your video is saved at</string>
-    <string name="title_activity_receive_video_play">ReceiveVideoPlay</string>
 </resources>

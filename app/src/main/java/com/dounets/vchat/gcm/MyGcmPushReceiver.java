@@ -28,18 +28,15 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle bundle) {
-        Boolean isBackground = Boolean.valueOf(bundle.getString("is_background"));
+        boolean isBackground = Boolean.valueOf(bundle.getString("is_background"));
         String sendUserId = bundle.getString("send_user_id");
         String notificationBody = bundle.getString("gcm.notification.body");
         String notificationTitle = bundle.getString("gcm.notification.title");
         String videoId = bundle.getString("video_id");
         String videoUrl = bundle.getString("url");
         String notificationE = bundle.getString("gcm.notification.e");
-        // Test
-        videoUrl = "https://s3-ap-southeast-1.amazonaws.com/scsklvchat/1456588233793.mp4";
 
         processUserMessage(notificationTitle, notificationBody, isBackground, videoUrl);
-
     }
 
     /**
