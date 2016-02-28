@@ -89,9 +89,20 @@ public class MainActivity extends PrimaryActivity {
                     //Toast.makeText(getApplicationContext(), "GCM registration token is stored in server!", Toast.LENGTH_LONG).show();
 
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    // new push notification is received
-                    handlePushNotification(intent);
-                    //Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
+
+                    if (intent.getStringExtra("video_id").equals("-1")) {
+                        // New user register
+                        asyncRequestGetListUsers();
+
+                    } else {
+                        // play notification sound
+                        NotificationUtils notificationUtils = new NotificationUtils();
+                        notificationUtils.playNotificationSound();
+
+                        // new push notification is received
+                        handlePushNotification(intent);
+                        //Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         };

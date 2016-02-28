@@ -55,7 +55,8 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
         View header = layoutInflater.inflate(R.layout.list_header, null);
         imvUser = ButterKnife.findById(header, R.id.im_user);
         imvGroup = ButterKnife.findById(header, R.id.im_group);
-        toolBar.setTitle(".:: " +
+        activity.setSupportActionBar(toolBar);
+        activity.getSupportActionBar().setTitle(".:: " +
                 "Hello " + SharedPreferenceUtils.getString("user_name"));
 
         gridView.addHeaderView(header);

@@ -59,10 +59,6 @@ public class MyGcmPushReceiver extends GcmListenerService {
                 pushNotification.putExtra("message", message);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 
-                // play notification sound
-                NotificationUtils notificationUtils = new NotificationUtils();
-                notificationUtils.playNotificationSound();
-
             } else {
 
                 // app is in background. show the message in notification try

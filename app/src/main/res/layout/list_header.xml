@@ -43,7 +43,7 @@
             android:textColor="#ff0000"
             android:textStyle="bold"
             android:textSize="25dp"
-            android:text="Call Group"/>
+            android:text="Send All"/>
     </LinearLayout>
 
 </LinearLayout>
