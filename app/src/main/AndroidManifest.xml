@@ -21,9 +21,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.dounets.vchat.permission.C2D_MESSAGE" />
+
     <!--
-    needed for older devices -
-    used to check app background / foreground status
+    Needed for older devices - used to check app background / foreground status
     -->
     <uses-permission android:name="android.permission.GET_TASKS" />
 
@@ -35,7 +35,6 @@
         android:protectionLevel="signature" />
 
     <!-- END Added for GCM -->
-
 
     <application
         android:name=".App"
@@ -78,17 +77,26 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/PrimaryActivity"></activity>
+            android:theme="@style/PrimaryActivity">
+        </activity>
         <activity
             android:name=".video.FFmpegRecorderActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        </activity>
         <activity
             android:name=".video.FFmpegPreviewActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ui.activity.ReceiveVideoPlay"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:theme="@style/PrimaryActivity">
+        </activity>
 
         <!-- START Added for GCM -->
         <receiver
@@ -116,12 +124,8 @@
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
-
         <!-- END Added for GCM -->
-        <activity
-            android:name=".ui.activity.ReceiveVideoPlay"
-            android:label="@string/title_activity_receive_video_play"
-            android:theme="@style/PrimaryActivity"></activity>
+
     </application>
 
 </manifest>

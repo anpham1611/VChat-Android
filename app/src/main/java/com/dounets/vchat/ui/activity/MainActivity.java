@@ -88,7 +88,7 @@ public class MainActivity extends PrimaryActivity {
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
                     // new push notification is received
                     handlePushNotification(intent);
-                    Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
                 }
             }
         };
@@ -103,20 +103,6 @@ public class MainActivity extends PrimaryActivity {
      * Handles new push notification
      */
     private void handlePushNotification(Intent intent) {
-        int type = intent.getIntExtra("type", -1);
-
-        // if the push is of chat room message
-        // simply update the UI unread messages count
-        if (type == Config.PUSH_TYPE_CHATROOM) {
-
-
-        } else if (type == Config.PUSH_TYPE_USER) {
-            // push belongs to user alone
-            // just showing the message in a toast
-
-            Toast.makeText(getApplicationContext(), "New push: ", Toast.LENGTH_LONG).show();
-        }
-
 
     }
 
