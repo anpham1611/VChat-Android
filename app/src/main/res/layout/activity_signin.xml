@@ -45,15 +45,21 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textAlignment="center"
-            android:textColor="@color/grey"
+            android:textColor="@color/blue_dark"
             android:layout_marginTop="12dp"
-            android:hint="Input your name"/>
+            android:hint="Input your name"
+            android:textColorHint="@color/grey" />
         <Button
             android:id="@+id/btn_next"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="NEXT"/>
+            android:layout_marginTop="20dp"
+            android:text="GO"
+            android:background="#dae084"
+            android:textColor="@color/material_grey_800"
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

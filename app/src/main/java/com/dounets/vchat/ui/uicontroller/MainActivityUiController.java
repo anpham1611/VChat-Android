@@ -68,8 +68,8 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
     }
 
     private void initToolbar() {
-        toolBar.setNavigationIcon(R.drawable.icn_white_back);
-        toolBar.setNavigationOnClickListener(this);
+//        toolBar.setNavigationIcon(R.drawable.icn_white_back);
+//        toolBar.setNavigationOnClickListener(this);
     }
 
     public void notifyDataSetChanged() {
