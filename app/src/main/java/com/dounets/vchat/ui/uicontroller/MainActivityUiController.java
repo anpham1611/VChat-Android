@@ -64,6 +64,7 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
         imvGroup.setOnClickListener(this);
+        imvUser.setOnClickListener(this);
     }
 
     private void initToolbar() {
