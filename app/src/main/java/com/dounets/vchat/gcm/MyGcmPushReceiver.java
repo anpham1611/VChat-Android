@@ -61,12 +61,14 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
             } else {
 
-                // app is in background. show the message in notification try
-                Intent resultIntent = new Intent(getApplicationContext(), ReceiveVideoPlay.class);
-                resultIntent.putExtra("video_url", data);
-                resultIntent.putExtra("send_user_id", sendUserId);
-                resultIntent.putExtra("video_id", videoId);
-                showNotificationMessage(getApplicationContext(), title, message, String.valueOf(new Date().getTime()), resultIntent);
+                if (!videoId.equals("-1")) {
+                    // app is in background. show the message in notification try
+                    Intent resultIntent = new Intent(getApplicationContext(), ReceiveVideoPlay.class);
+                    resultIntent.putExtra("video_url", data);
+                    resultIntent.putExtra("send_user_id", sendUserId);
+                    resultIntent.putExtra("video_id", videoId);
+                    showNotificationMessage(getApplicationContext(), title, message, String.valueOf(new Date().getTime()), resultIntent);
+                }
             }
 
         } else {
