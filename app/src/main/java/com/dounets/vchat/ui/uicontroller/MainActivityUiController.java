@@ -40,7 +40,6 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
 
     ImageView imvGroup;
     ImageView imvUser;
-    TextView tvUserName;
 
     public MainActivityUiController(MainActivity activity, ContactAdapter adapter) {
         this.activity = activity;
@@ -56,8 +55,9 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
         View header = layoutInflater.inflate(R.layout.list_header, null);
         imvUser = ButterKnife.findById(header, R.id.im_user);
         imvGroup = ButterKnife.findById(header, R.id.im_group);
-        tvUserName = ButterKnife.findById(header, R.id.tvUserName);
-        tvUserName.setText(SharedPreferenceUtils.getString("user_name"));
+        activity.setSupportActionBar(toolBar);
+        activity.getSupportActionBar().setTitle(".:: " +
+                "Hello " + SharedPreferenceUtils.getString("user_name"));
 
         gridView.addHeaderView(header);
         gridView.setAdapter(adapter);
@@ -65,11 +65,12 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
         imvGroup.setOnClickListener(this);
+        imvUser.setOnClickListener(this);
     }
 
     private void initToolbar() {
-        toolBar.setNavigationIcon(R.drawable.icn_white_back);
-        toolBar.setNavigationOnClickListener(this);
+//        toolBar.setNavigationIcon(R.drawable.icn_white_back);
+//        toolBar.setNavigationOnClickListener(this);
     }
 
     public void notifyDataSetChanged() {
@@ -81,6 +82,7 @@ public class MainActivityUiController implements View.OnClickListener, AbsListVi
         switch (v.getId()) {
 
             case R.id.im_user:
+//                Toast.makeText(activity, "Coming soon!", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.im_group:

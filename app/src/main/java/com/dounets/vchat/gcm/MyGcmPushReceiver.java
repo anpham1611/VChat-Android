@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.dounets.vchat.app.Config;
-import com.dounets.vchat.ui.activity.MainActivity;
+import com.dounets.vchat.ui.activity.ReceiveVideoPlay;
 import com.google.android.gms.gcm.GcmListenerService;
+
+import java.util.Date;
 
 /**
  * Created by vinaymaneti on 2/25/16.
@@ -30,38 +31,50 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle bundle) {
-        String title = bundle.getString("title");
-        String message = bundle.getString("message");
-        String image = bundle.getString("image");
-        String timestamp = bundle.getString("created_at");
-        Log.e(TAG, "From: " + from);
-        Log.e(TAG, "Title: " + title);
-        Log.e(TAG, "message: " + message);
-        Log.e(TAG, "image: " + image);
-        Log.e(TAG, "timestamp: " + timestamp);
+        boolean isBackground = Boolean.valueOf(bundle.getString("is_background"));
+        String sendUserId = bundle.getString("send_user_id");
+        String notificationBody = bundle.getString("gcm.notification.body");
+        String notificationTitle = bundle.getString("gcm.notification.title");
+        String videoId = bundle.getString("video_id");
+        String videoUrl = bundle.getString("url");
 
-        if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
+        processUserMessage(notificationTitle, notificationBody, isBackground, videoUrl, sendUserId, videoId);
+    }
 
-            // app is in foreground, broadcast the push message
-            Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
-            pushNotification.putExtra("message", message);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+    /**
+     * Processing user specific push message
+     * It will be displayed with / without image in push notification tray
+     */
+    private void processUserMessage(String title, String message, boolean isBackground, String data, String sendUserId, String videoId) {
+        if (!isBackground) {
 
-            // play notification sound
-            NotificationUtils notificationUtils = new NotificationUtils();
-            notificationUtils.playNotificationSound();
-        } else {
+            // verifying whether the app is in background or foreground
+            if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
 
-            Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-            resultIntent.putExtra("message", message);
+                // app is in foreground, broadcast the push message
+                Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
+                pushNotification.putExtra("video_url", data);
+                pushNotification.putExtra("send_user_id", sendUserId);
+                pushNotification.putExtra("video_id", videoId);
+                pushNotification.putExtra("message", message);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 
-            if (TextUtils.isEmpty(image)) {
-                showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
             } else {
-                showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, image);
+
+                // app is in background. show the message in notification try
+                Intent resultIntent = new Intent(getApplicationContext(), ReceiveVideoPlay.class);
+                resultIntent.putExtra("video_url", data);
+                resultIntent.putExtra("send_user_id", sendUserId);
+                resultIntent.putExtra("video_id", videoId);
+                showNotificationMessage(getApplicationContext(), title, message, String.valueOf(new Date().getTime()), resultIntent);
             }
+
+        } else {
+            // the push notification is silent, may be other operations needed
+            // like inserting it in to SQLite
         }
     }
+
 
     /**
      * Showing notification with text only

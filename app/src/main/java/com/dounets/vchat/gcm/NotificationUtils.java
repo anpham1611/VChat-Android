@@ -14,6 +14,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.TextUtils;
@@ -178,6 +179,15 @@ public class NotificationUtils {
 
     // Playing notification sound
     public void playNotificationSound() {
+
+        try {
+            Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            v.vibrate(500);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         try {
             Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + App.getInstance().getApplicationContext().getPackageName() + "/raw/notification");

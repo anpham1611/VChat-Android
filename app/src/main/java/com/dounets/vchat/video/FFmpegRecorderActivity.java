@@ -45,10 +45,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dounets.vchat.R;
-import com.dounets.vchat.net.helper.S3Uploader;
 
 import org.bytedeco.javacv.FrameRecorder;
 
@@ -61,9 +59,6 @@ import java.nio.Buffer;
 import java.nio.ShortBuffer;
 import java.util.Collections;
 import java.util.List;
-
-import bolts.Continuation;
-import bolts.Task;
 
 /**
  * Created by Sourab Sharma (sourab.sharma@live.in)  on 1/19/2016.
@@ -137,6 +132,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 	// The degrees of the device rotated clockwise from its natural orientation.
 	private int deviceOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
 	private Handler mHandler;
+	private String mListUserIds;
 
 	private void initHandler(){
 		mHandler = new Handler(){
@@ -232,6 +228,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 		screenWidth = displaymetrics.widthPixels;
 
 		orientationListener = new DeviceOrientationEventListener(FFmpegRecorderActivity.this);
+		mListUserIds = getIntent().getStringExtra("list_user_send");
 
 		initHandler();
 		
@@ -932,35 +929,11 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 		try{
 			setActivityResult(valid);
 			if(valid){
-				Intent intent = new Intent(this, FFmpegPreviewActivity.class);
-				intent.putExtra("path", strVideoPath);
-				intent.putExtra("imagePath", imagePath);
-				startActivity(intent);
-
-				/*Upload video file to S3*/
-				S3Uploader.uploadFileToS3InBackground(strVideoPath).onSuccessTask(new Continuation<String, Task<Object>>() {
-					@Override
-					public Task<Object> then(Task<String> task) throws Exception {
-						// Send request upload success to server ?
-						return null;
-					}
-				}).continueWith(new Continuation<Object, Void>() {
-					@Override
-					public Void then(final Task<Object> task) throws Exception {
-						runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								if (task.isFaulted()) {
-									return;
-								}
-								Toast.makeText(FFmpegRecorderActivity.this, "Send video successfully!", Toast.LENGTH_LONG);
-								finish();
-							}
-						});
-						return null;
-					}
-				});
-
+//				Intent intent = new Intent(this, FFmpegPreviewActivity.class);
+//				intent.putExtra("path", strVideoPath);
+//				intent.putExtra("imagePath", imagePath);
+//				intent.putExtra("list_user_send", mListUserIds);
+//				startActivity(intent);
 			}
 		}catch (Throwable e){
 			e.printStackTrace();
@@ -976,7 +949,7 @@ public class FFmpegRecorderActivity extends Activity implements OnClickListener,
 		if (valid)
 		{
 			resultCode = RESULT_OK;
-			resultIntent.setData(uriVideoPath);
+			resultIntent.putExtra("video_path", strVideoPath);
 		} else
 			resultCode = RESULT_CANCELED;
 		

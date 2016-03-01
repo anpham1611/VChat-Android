@@ -56,6 +56,11 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
     }
 
     @Override
+    public long getItemId(int position) {
+        return getItem(position).getId();
+    }
+
+    @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
 
         ViewHolder vh;

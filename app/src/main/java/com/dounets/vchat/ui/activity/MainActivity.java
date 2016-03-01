@@ -1,10 +1,14 @@
 package com.dounets.vchat.ui.activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -15,9 +19,11 @@ import com.dounets.vchat.R;
 import com.dounets.vchat.app.Config;
 import com.dounets.vchat.data.model.Contact;
 import com.dounets.vchat.gcm.GcmIntentService;
+import com.dounets.vchat.gcm.NotificationUtils;
 import com.dounets.vchat.helper.SharedPreferenceUtils;
 import com.dounets.vchat.net.api.ApiResponse;
 import com.dounets.vchat.net.helper.ApiHelper;
+import com.dounets.vchat.net.helper.S3Uploader;
 import com.dounets.vchat.ui.adapter.ContactAdapter;
 import com.dounets.vchat.ui.uicontroller.MainActivityUiController;
 import com.dounets.vchat.video.FFmpegRecorderActivity;
@@ -28,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +46,12 @@ public class MainActivity extends PrimaryActivity {
     private MainActivityUiController uiController;
     private String TAG = MainActivity.class.getSimpleName();
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final int RECORD_REQUEST = 10000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private List<Contact> mData;
     private ContactAdapter mAdapter;
+    private String mListUserIds;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,7 @@ public class MainActivity extends PrimaryActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mContext = this;
         mData = new ArrayList<>();
         mAdapter = new ContactAdapter(this, mData);
         uiController = new MainActivityUiController(this, mAdapter);
@@ -67,10 +78,12 @@ public class MainActivity extends PrimaryActivity {
                 // checking for type intent filter
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
                     // gcm successfully registered
-                    // now subscribe to `global` topic to receive app wide notifications
                     String token = intent.getStringExtra("token");
-
                     //Toast.makeText(getApplicationContext(), "GCM registration token: " + token, Toast.LENGTH_LONG).show();
+
+                    // now subscribe to `global` topic to receive app wide notifications
+                    subscribeToGlobalTopic();
+
 
                 } else if (intent.getAction().equals(Config.SENT_TOKEN_TO_SERVER)) {
                     // gcm registration id is stored in our server's MySQL
@@ -78,9 +91,20 @@ public class MainActivity extends PrimaryActivity {
                     //Toast.makeText(getApplicationContext(), "GCM registration token is stored in server!", Toast.LENGTH_LONG).show();
 
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    // new push notification is received
 
-                    Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
+                    if (intent.getStringExtra("video_id").equals("-1")) {
+                        // New user register
+                        asyncRequestGetListUsers();
+
+                    } else {
+                        // play notification sound
+                        NotificationUtils notificationUtils = new NotificationUtils(mContext);
+                        notificationUtils.playNotificationSound();
+
+                        // new push notification is received
+                        handlePushNotification(intent);
+                        //Toast.makeText(getApplicationContext(), "Push notification is received!", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         };
@@ -89,6 +113,71 @@ public class MainActivity extends PrimaryActivity {
             registerGCM();
         }
 
+    }
+
+    /**
+     * Handles new push notification
+     */
+    private void handlePushNotification(final Intent intent) {
+
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setCancelable(false);
+        builder.setTitle(R.string.confirm);
+        builder.setMessage(intent.getStringExtra("message"));
+        builder.setPositiveButton("View Now", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                String videoUrl = intent.getStringExtra("video_url");
+                String sendUserId = intent.getStringExtra("send_user_id");
+                String videoId = intent.getStringExtra("video_id");
+
+                Intent resultIntent = new Intent(getApplicationContext(), ReceiveVideoPlay.class);
+                resultIntent.putExtra("video_url", videoUrl);
+                resultIntent.putExtra("send_user_id", sendUserId);
+                resultIntent.putExtra("video_id", videoId);
+                startActivity(resultIntent);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                String sendUserId = intent.getStringExtra("send_user_id");
+                String videoId = intent.getStringExtra("video_id");
+                callFishReceivedVideo(sendUserId, videoId);
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    public void callFishReceivedVideo(String sendUserId, String videoId) {
+        ApiHelper.doRequestReceivedVideo(videoId, sendUserId).continueWith(new Continuation<ApiResponse, Object>() {
+            @Override
+            public Object then(final Task<ApiResponse> task) throws Exception {
+                dismissLoadingMessage();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (task.isFaulted()) {
+                            Toast.makeText(getBaseContext(), "Connect server failed. Please try again!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+                });
+                return null;
+            }
+        });
+    }
+
+    // subscribing to global topic
+    private void subscribeToGlobalTopic() {
+        Intent intent = new Intent(this, GcmIntentService.class);
+        intent.putExtra(GcmIntentService.KEY, GcmIntentService.SUBSCRIBE);
+        intent.putExtra(GcmIntentService.TOPIC, Config.TOPIC_GLOBAL);
+        startService(intent);
     }
 
     private void asyncRequestGetListUsers() {
@@ -133,8 +222,80 @@ public class MainActivity extends PrimaryActivity {
     }
 
     public void onClickRecord(long id) {
+        mListUserIds = "" + id;
+        if (id == 0) {
+            // All users
+            List<String> inputArray = new ArrayList<>();
+            for (int i=0; i<mData.size(); i++) {
+                inputArray.add(mData.get(i).getId().toString());
+            }
+            if(inputArray.size() > 0) {
+                mListUserIds = implodeArray(inputArray, ",");
+            }
+        }
         Intent i = new Intent(MainActivity.this, FFmpegRecorderActivity.class);
-        startActivity(i);
+        i.putExtra("list_user_send", mListUserIds);
+        startActivityForResult(i, RECORD_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RECORD_REQUEST && resultCode == RESULT_OK) {
+            final String videoPath = data.getStringExtra("video_path");
+            showLoadingMessage(R.string.sending);
+            S3Uploader.uploadFileToS3InBackground(videoPath, mListUserIds).onSuccessTask(new Continuation<String, Task<ApiResponse>>() {
+                @Override
+                public Task<ApiResponse> then(Task<String> task) throws Exception {
+                    JSONObject objectRes = new JSONObject(String.valueOf(task.getResult()));
+
+                    return ApiHelper.doRequestSendPush(objectRes.getString("name"), objectRes.getString("users"));
+
+                }
+
+            }).continueWith(new Continuation<ApiResponse, Void>() {
+                @Override
+                public Void then(final Task<ApiResponse> task) throws Exception {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissLoadingMessage();
+                            if (task.isFaulted()) {
+                                Toast.makeText(MainActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            Toast.makeText(MainActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+
+                            // Delete file
+                            File file = new File(videoPath);
+                            boolean deleted = file.delete();
+                        }
+                    });
+                    return null;
+                }
+            });
+        }
+    }
+
+    private static String implodeArray(List<String> inputArray, String glueString) {
+
+        /** Output variable */
+        String output = "";
+
+        if (inputArray.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(inputArray.get(0));
+
+            for (int i=1; i<inputArray.size(); i++) {
+                sb.append(glueString);
+                sb.append(inputArray.get(i));
+            }
+
+            output = sb.toString();
+        }
+
+        return output;
     }
 
     @Override
@@ -148,6 +309,10 @@ public class MainActivity extends PrimaryActivity {
         // by doing this, the activity will be notified each time a new message arrives
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.PUSH_NOTIFICATION));
+
+
+        // clearing the notification tray
+        NotificationUtils.clearNotifications();
     }
 
     @Override

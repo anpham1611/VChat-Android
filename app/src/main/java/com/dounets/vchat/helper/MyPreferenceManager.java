@@ -2,6 +2,7 @@ package com.dounets.vchat.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * Created by vinaymaneti on 2/24/16.
@@ -61,4 +62,5 @@ public class MyPreferenceManager {
         editor.clear();
         editor.commit();
     }
+
 }
