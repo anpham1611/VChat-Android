@@ -6,12 +6,19 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.dounets.vchat.R;
+import com.dounets.vchat.net.api.ApiResponse;
+import com.dounets.vchat.net.helper.ApiHelper;
 import com.dounets.vchat.ui.activity.ReceiveVideoPlay;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
+import java.io.File;
+
+import bolts.Continuation;
+import bolts.Task;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -47,37 +54,41 @@ public class ReceiveVideoPlayUiController implements View.OnClickListener {
 
     public void playVideo(String url) {
 
-        Uri uri = Uri.parse(url);
-        videoView.setVideoURI(uri);
-        videoView.requestFocus();
-        videoView.start();
-        progressView.setVisibility(View.VISIBLE);
-
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        progressView.setVisibility(View.GONE);
+        ApiHelper.doRequestDownloadVideo(activity, url).continueWith(new Continuation<ApiResponse, Object>() {
             @Override
-            public void onPrepared(MediaPlayer mp) {
-                // TODO Auto-generated method stub
-                mp.start();
-                mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+            public Object then(final Task<ApiResponse> task) throws Exception {
+                activity.runOnUiThread(new Runnable() {
                     @Override
-                    public void onVideoSizeChanged(MediaPlayer mp, int arg1,
-                                                   int arg2) {
-                        // TODO Auto-generated method stub
+                    public void run() {
+                        if (task.isFaulted()) {
+                            Toast.makeText(activity, "Connect server failed. Please try again!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+//                        Toast.makeText(activity, "Success!", Toast.LENGTH_LONG).show();
+
+                        Uri uri = Uri.parse(task.getResult().getBody());
+                        videoView.setVideoURI(uri);
+                        videoView.requestFocus();
+                        videoView.start();
                         progressView.setVisibility(View.GONE);
-                        mp.start();
+                        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+
+                                // Delete video
+                                File video = new File(task.getResult().getBody());
+                                video.delete();
+
+                                // Back to main screen
+                                activity.callFishReceivedVideo();
+                            }
+                        });
                     }
                 });
-
+                return null;
             }
         });
-
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                activity.callFishReceivedVideo();
-            }
-        });
-
     }
 
     @Override

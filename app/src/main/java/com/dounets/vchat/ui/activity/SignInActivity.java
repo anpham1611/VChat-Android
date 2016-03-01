@@ -141,7 +141,7 @@ public class SignInActivity extends PrimaryActivity {
 
         showLoadingMessage(R.string.processing);
 
-        /*ApiHelper.doRegister(name, deviceId).continueWith(new Continuation<ApiResponse, Object>() {
+        ApiHelper.doRegister(name, deviceId).continueWith(new Continuation<ApiResponse, Object>() {
             @Override
             public Object then(final Task<ApiResponse> task) throws Exception {
                 dismissLoadingMessage();
@@ -167,7 +167,7 @@ public class SignInActivity extends PrimaryActivity {
                 });
                 return null;
             }
-        });*/
+        });
 
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
@@ -178,27 +178,6 @@ public class SignInActivity extends PrimaryActivity {
 //                startActivity(intent);
 //            }
 //        }, 1000);
-
-//        ApiClient.downloadVideo(new File(Environment.getExternalStorageDirectory() + ""), "https://s3-ap-southeast-1.amazonaws.com/scsklvchat/videos/1456672429580.mp4");
-
-        ApiHelper.doRequestDownloadVideo(new File(Environment.getExternalStorageDirectory() + ((new Date().getTime()) + ".mp4")), "https://s3-ap-southeast-1.amazonaws.com/scsklvchat/videos/1456672429580.mp4").continueWith(new Continuation<ApiResponse, Object>() {
-            @Override
-            public Object then(final Task<ApiResponse> task) throws Exception {
-                dismissLoadingMessage();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (task.isFaulted()) {
-                            Toast.makeText(getBaseContext(), "Connect server failed. Please try again!", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        Toast.makeText(getBaseContext(), "Success!", Toast.LENGTH_LONG).show();
-
-                    }
-                });
-                return null;
-            }
-        });
 
     }
 

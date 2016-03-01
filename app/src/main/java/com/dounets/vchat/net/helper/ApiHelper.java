@@ -1,5 +1,7 @@
 package com.dounets.vchat.net.helper;
 
+import android.content.Context;
+
 import com.dounets.vchat.helper.SharedPreferenceUtils;
 import com.dounets.vchat.net.api.ApiClient;
 import com.dounets.vchat.net.api.ApiRequest;
@@ -45,10 +47,10 @@ public class ApiHelper extends BaseHelper {
         return ApiClient.callInBackground(request);
     }
 
-    public static final Task<ApiResponse> doRequestDownloadVideo(File file, String url) {
+    public static final Task<ApiResponse> doRequestDownloadVideo(Context context, String url) {
 
         ApiRequest request = new ApiRequest(ApiRequest.Method.GET, null, null);
-        return ApiClient.callInBackgroundDownloadVideo(request, file, url);
+        return ApiClient.callInBackgroundDownloadVideo(request, context, url);
     }
 
 }

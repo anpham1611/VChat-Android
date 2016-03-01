@@ -1,5 +1,7 @@
 package com.dounets.vchat.net.api;
 
+import android.content.Context;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -14,10 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import bolts.Task;
+import okio.BufferedSink;
+import okio.Okio;
 
 public class ApiClient {
     private static OkHttpClient client = new OkHttpClient();
@@ -49,39 +54,29 @@ public class ApiClient {
         }
     }
 
-    public static Task<ApiResponse> callInBackgroundDownloadVideo(final ApiRequest request, final File file, final String url) {
+    public static Task<ApiResponse> callInBackgroundDownloadVideo(final ApiRequest request, final Context context, final String url) {
         return Task.callInBackground(new Callable<ApiResponse>() {
             @Override
             public ApiResponse call() throws Exception {
-                return ApiClient.callDownloadVideo(request, file, url);
+                return ApiClient.callDownloadVideo(request, context, url);
             }
         });
     }
 
-    public static ApiResponse callDownloadVideo(ApiRequest request, File file, String url) throws ApiError {
+    public static ApiResponse callDownloadVideo(ApiRequest request, Context context, String url) throws ApiError {
         try {
             Response response = client.newCall(request.getDownloadS3Request(url)).execute();
             if (response.isSuccessful()) {
 
-                InputStream is = response.body().byteStream();
+                File downloadedFile = new File(context.getCacheDir(), (new Date().getTime()) + ".mp4");
 
-                BufferedInputStream input = new BufferedInputStream(is);
-                OutputStream output = new FileOutputStream(file);
+                BufferedSink sink = Okio.buffer(Okio.sink(downloadedFile));
+                sink.writeAll(response.body().source());
+                sink.close();
 
-                byte[] data = new byte[1024];
-
-                int count;
-
-                while ((count = input.read(data)) != -1) {
-                    count += count;
-                    output.write(data, 0, count);
-                }
-
-                output.flush();
-                output.close();
-                input.close();
-
-                return new ApiResponse(response);
+                ApiResponse apiResponse = new ApiResponse(response);
+                apiResponse.setBody(downloadedFile.getPath());
+                return apiResponse;
 
             } else {
                 ApiResponse apiResponse = new ApiResponse(response);
