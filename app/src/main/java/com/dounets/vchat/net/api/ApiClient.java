@@ -4,8 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -29,6 +36,53 @@ public class ApiClient {
             Response response = client.newCall(request.getRequest()).execute();
             if (response.isSuccessful()) {
                 return new ApiResponse(response);
+            } else {
+                ApiResponse apiResponse = new ApiResponse(response);
+                String body = apiResponse.getBody();
+                if (body != null) {
+
+                }
+                throw new ApiError(response); /* Throw an error so caller can handle it */
+            }
+        } catch (IOException e) {
+            throw new ApiError(e);
+        }
+    }
+
+    public static Task<ApiResponse> callInBackgroundDownloadVideo(final ApiRequest request, final File file, final String url) {
+        return Task.callInBackground(new Callable<ApiResponse>() {
+            @Override
+            public ApiResponse call() throws Exception {
+                return ApiClient.callDownloadVideo(request, file, url);
+            }
+        });
+    }
+
+    public static ApiResponse callDownloadVideo(ApiRequest request, File file, String url) throws ApiError {
+        try {
+            Response response = client.newCall(request.getDownloadS3Request(url)).execute();
+            if (response.isSuccessful()) {
+
+                InputStream is = response.body().byteStream();
+
+                BufferedInputStream input = new BufferedInputStream(is);
+                OutputStream output = new FileOutputStream(file);
+
+                byte[] data = new byte[1024];
+
+                int count;
+
+                while ((count = input.read(data)) != -1) {
+                    count += count;
+                    output.write(data, 0, count);
+                }
+
+                output.flush();
+                output.close();
+                input.close();
+
+                return new ApiResponse(response);
+
             } else {
                 ApiResponse apiResponse = new ApiResponse(response);
                 String body = apiResponse.getBody();
@@ -86,4 +140,5 @@ public class ApiClient {
             throw new ApiError(e);
         }
     }
+
 }

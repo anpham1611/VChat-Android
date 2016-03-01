@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import com.dounets.vchat.R;
 import com.dounets.vchat.app.Config;
 import com.dounets.vchat.gcm.GcmIntentService;
 import com.dounets.vchat.helper.SharedPreferenceUtils;
+import com.dounets.vchat.net.api.ApiClient;
 import com.dounets.vchat.net.api.ApiResponse;
 import com.dounets.vchat.net.helper.ApiHelper;
 import com.dounets.vchat.ui.uicontroller.SignInActivityUiController;
@@ -23,6 +25,9 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.util.Date;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -136,7 +141,7 @@ public class SignInActivity extends PrimaryActivity {
 
         showLoadingMessage(R.string.processing);
 
-        ApiHelper.doRegister(name, deviceId).continueWith(new Continuation<ApiResponse, Object>() {
+        /*ApiHelper.doRegister(name, deviceId).continueWith(new Continuation<ApiResponse, Object>() {
             @Override
             public Object then(final Task<ApiResponse> task) throws Exception {
                 dismissLoadingMessage();
@@ -162,7 +167,7 @@ public class SignInActivity extends PrimaryActivity {
                 });
                 return null;
             }
-        });
+        });*/
 
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
@@ -173,6 +178,28 @@ public class SignInActivity extends PrimaryActivity {
 //                startActivity(intent);
 //            }
 //        }, 1000);
+
+//        ApiClient.downloadVideo(new File(Environment.getExternalStorageDirectory() + ""), "https://s3-ap-southeast-1.amazonaws.com/scsklvchat/videos/1456672429580.mp4");
+
+        ApiHelper.doRequestDownloadVideo(new File(Environment.getExternalStorageDirectory() + ((new Date().getTime()) + ".mp4")), "https://s3-ap-southeast-1.amazonaws.com/scsklvchat/videos/1456672429580.mp4").continueWith(new Continuation<ApiResponse, Object>() {
+            @Override
+            public Object then(final Task<ApiResponse> task) throws Exception {
+                dismissLoadingMessage();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (task.isFaulted()) {
+                            Toast.makeText(getBaseContext(), "Connect server failed. Please try again!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        Toast.makeText(getBaseContext(), "Success!", Toast.LENGTH_LONG).show();
+
+                    }
+                });
+                return null;
+            }
+        });
+
     }
 
 }

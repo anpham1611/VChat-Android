@@ -5,6 +5,7 @@ import com.dounets.vchat.net.api.ApiClient;
 import com.dounets.vchat.net.api.ApiRequest;
 import com.dounets.vchat.net.api.ApiResponse;
 
+import java.io.File;
 import java.util.HashMap;
 
 import bolts.Task;
@@ -42,6 +43,12 @@ public class ApiHelper extends BaseHelper {
         params.put("video_id", videoId);
         ApiRequest request = new ApiRequest(ApiRequest.Method.POST, getPrefixUrl() + "received_video", params);
         return ApiClient.callInBackground(request);
+    }
+
+    public static final Task<ApiResponse> doRequestDownloadVideo(File file, String url) {
+
+        ApiRequest request = new ApiRequest(ApiRequest.Method.GET, null, null);
+        return ApiClient.callInBackgroundDownloadVideo(request, file, url);
     }
 
 }
